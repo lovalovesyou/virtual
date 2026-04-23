@@ -8,10 +8,10 @@ import {
 
 // 🔴 PEGA AQUÍ TU CONFIG DE FIREBASE
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyCoptsSyuE612fp1Y-XDUkPhN2PKKotTWE",
+  authDomain: "lova-260b5.firebaseapp.com",
+  projectId: "lova-260b5",
+  appId: "1:955507904645:web:e9aae66b5aaddd3b5c59ec"
 };
 
 // INIT
