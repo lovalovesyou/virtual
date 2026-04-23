@@ -9,7 +9,7 @@ function goHome() {
   window.location.href = "home.html";
 }
 
-// CAMBIAR PASO
+// PASOS
 function nextStep() {
   document.getElementById("step" + currentStep).classList.add("hidden");
   currentStep++;
@@ -18,45 +18,63 @@ function nextStep() {
   updateProgress();
 }
 
-// PROGRESS BAR
+// PROGRESS
 function updateProgress() {
-  const progress = document.getElementById("progress");
-  progress.style.width = (currentStep * 25) + "%";
+  document.getElementById("progress").style.width = (currentStep * 25) + "%";
 }
 
-// SELECCIONAR PRODUCTO
+// PRODUCTO
 function selectProduct(p) {
   product = p;
-  updatePreview();
   nextStep();
 }
 
-// SELECCIONAR COLOR
+// COLOR
 function selectColor(c) {
   color = c;
-  updatePreview();
+  document.getElementById("preview").style.background = c;
   nextStep();
 }
 
-// SELECCIONAR TALLA
+// TALLA
 function selectSize(s) {
   size = s;
 }
 
-// PREVIEW
-function updatePreview() {
-  const preview = document.getElementById("preview");
+// SUBIR IMÁGENES
+document.getElementById("upload").addEventListener("change", function (e) {
+  const files = e.target.files;
+  const container = document.getElementById("designs");
 
-  preview.innerHTML = product ? product.toUpperCase() : "Producto";
+  for (let file of files) {
+    const reader = new FileReader();
 
-  if (color) {
-    preview.style.background = color;
+    reader.onload = function (event) {
+      const img = document.createElement("img");
+
+      img.src = event.target.result;
+      img.className = "absolute w-24 cursor-move";
+
+      img.style.top = "50%";
+      img.style.left = "50%";
+      img.style.transform = "translate(-50%, -50%)";
+
+      container.appendChild(img);
+    };
+
+    reader.readAsDataURL(file);
   }
-}
+});
 
-// AGREGAR AL CARRITO
+// CARRITO
 function addToCart() {
-  const item = { product, color, size };
+  const designs = [];
+
+  document.querySelectorAll("#designs img").forEach(img => {
+    designs.push(img.src);
+  });
+
+  const item = { product, color, size, designs };
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.push(item);
