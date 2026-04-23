@@ -21,7 +21,6 @@
     <div id="progress" class="bg-white h-2 w-1/4"></div>
   </div>
 
-  <!-- CONTENIDO -->
   <div class="flex flex-col md:flex-row h-[calc(100vh-80px)]">
 
     <!-- OPCIONES -->
@@ -32,12 +31,10 @@
         <h2 class="text-2xl mb-4">Elige tu prenda</h2>
 
         <div class="grid grid-cols-2 gap-4">
-
           <button onclick="selectProduct('polera')" class="bg-zinc-800 p-4 rounded">Polera</button>
           <button onclick="selectProduct('sudadera')" class="bg-zinc-800 p-4 rounded">Sudadera</button>
           <button onclick="selectProduct('canguro')" class="bg-zinc-800 p-4 rounded">Canguro</button>
           <button onclick="selectProduct('polo')" class="bg-zinc-800 p-4 rounded">Polo</button>
-
         </div>
       </div>
 
@@ -46,19 +43,21 @@
         <h2 class="text-2xl mb-4">Elige color</h2>
 
         <div class="flex gap-4">
-
           <button onclick="selectColor('white')" class="w-10 h-10 bg-white rounded-full"></button>
           <button onclick="selectColor('black')" class="w-10 h-10 bg-black border rounded-full"></button>
           <button onclick="selectColor('red')" class="w-10 h-10 bg-red-500 rounded-full"></button>
-
         </div>
-
       </div>
 
-      <!-- PASO 3 -->
+      <!-- PASO 3 (SUBIR DISEÑO) -->
       <div id="step3" class="hidden">
-        <h2 class="text-2xl mb-4">Diseño (próximamente)</h2>
-        <button onclick="nextStep()" class="bg-white text-black px-4 py-2 rounded">Siguiente</button>
+        <h2 class="text-2xl mb-4">Sube tu diseño</h2>
+
+        <input type="file" id="upload" multiple class="mb-4">
+
+        <button onclick="nextStep()" class="bg-white text-black px-4 py-2 rounded">
+          Siguiente
+        </button>
       </div>
 
       <!-- PASO 4 -->
@@ -68,3 +67,32 @@
         <div class="flex gap-4 mb-4">
           <button onclick="selectSize('S')" class="bg-zinc-800 px-4 py-2 rounded">S</button>
           <button onclick="selectSize('M')" class="bg-zinc-800 px-4 py-2 rounded">M</button>
+          <button onclick="selectSize('L')" class="bg-zinc-800 px-4 py-2 rounded">L</button>
+        </div>
+
+        <button onclick="addToCart()" class="bg-white text-black px-6 py-3 rounded">
+          Agregar al carrito
+        </button>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="md:w-2/3 flex items-center justify-center">
+
+      <div id="preview" class="relative w-72 h-72 bg-white rounded overflow-hidden">
+
+        <!-- DISEÑOS -->
+        <div id="designs" class="absolute inset-0"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/builder.js"></script>
+
+</body>
+</html>
+
