@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+
 let product = null;
 let fit = null;
 let size = null;
@@ -11,75 +13,47 @@ let offsetY = 0;
 const preview = document.getElementById("preview");
 const shirtShape = document.getElementById("shirtShape");
 
-// 🎨 COLORES
+// COLORES
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
   {name:"Vino", value:"#722f37"},
   {name:"Blanco", value:"#ffffff"},
-  {name:"Verde pino", value:"#0b3d2e"},
-  {name:"Grafito", value:"#2f2f2f"},
-  {name:"Azul marino", value:"#0a1f44"},
-  {name:"Maringo", value:"#3c3c3c"},
-  {name:"Negro", value:"#000000"},
-  {name:"Blanco Melange", value:"#e5e5e5"},
-  {name:"Verde militar", value:"#4b5320"},
-  {name:"Azul acero", value:"#4682b4"},
-  {name:"Índigo graff", value:"#2c3e75"},
-  {name:"Melange", value:"#cfcfcf"},
-  {name:"Jeans jaspe", value:"#5a6c7d"},
-  {name:"Ocean graff", value:"#2e8b8b"},
-  {name:"Bronce", value:"#cd7f32"},
-  {name:"Arena", value:"#d2b48c"},
-  {name:"Verde menta", value:"#98ff98"},
-  {name:"Arena graff", value:"#c2a680"},
-  {name:"Cereza graff", value:"#8b0000"}
+  {name:"Negro", value:"#000000"}
 ];
 
 // NAV
-function goHome() {
+window.goHome = function() {
   window.location.href = "home.html";
-}
+};
 
 // PRODUCTO
-function selectProduct(p) {
+window.selectProduct = function(p) {
   product = p;
 
-  // cambiar forma según prenda
-  if (p === "polera") {
-    shirtShape.setAttribute("d","M50 20 L150 20 L180 70 L150 90 L150 200 L50 200 L50 90 L20 70 Z");
-  }
-
-  if (p === "polo") {
-    shirtShape.setAttribute("d","M50 20 L150 20 L170 70 L150 90 L150 200 L50 200 L50 90 L30 70 Z");
-  }
-
-  if (p === "canguro") {
-    shirtShape.setAttribute("d","M40 30 L160 30 L180 90 L150 110 L150 200 L50 200 L50 110 L20 90 Z");
-  }
-
-  if (p === "sudadera") {
-    shirtShape.setAttribute("d","M45 25 L155 25 L175 80 L150 100 L150 200 L50 200 L50 100 L25 80 Z");
-  }
+  document.getElementById("step1").classList.add("hidden");
 
   if (p === "polera") {
-    document.getElementById("step1").classList.add("hidden");
     document.getElementById("stepFit").classList.remove("hidden");
   } else {
     showColors();
   }
-}
+
+  // CAMBIO DE FORMA
+  if (p === "polo") {
+    shirtShape.setAttribute("d","M50 20 L150 20 L170 70 L150 90 L150 200 L50 200 L50 90 L30 70 Z");
+  }
+};
 
 // CORTE
-function selectFit(f) {
+window.selectFit = function(f) {
   fit = f;
   showColors();
-}
+};
 
 // COLORES
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
-  document.getElementById("step1").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
 
   const container = document.getElementById("colors");
@@ -89,8 +63,7 @@ function showColors() {
     const btn = document.createElement("button");
 
     btn.style.background = c.value;
-    btn.title = c.name;
-    btn.className = "w-10 h-10 rounded border";
+    btn.className = "w-10 h-10 rounded";
 
     btn.onclick = () => selectColor(c);
 
@@ -108,11 +81,11 @@ function selectColor(c) {
   document.getElementById("stepUpload").classList.remove("hidden");
 }
 
-// PASO
-function goSize() {
+// PASOS
+window.goSize = function() {
   document.getElementById("stepUpload").classList.add("hidden");
   document.getElementById("stepSize").classList.remove("hidden");
-}
+};
 
 // SUBIR
 document.getElementById("upload").addEventListener("change", (e) => {
@@ -133,7 +106,6 @@ document.getElementById("upload").addEventListener("change", (e) => {
 
       enableDrag(img);
       enableResize(img);
-      enableSelect(img);
 
       container.appendChild(img);
     };
@@ -179,40 +151,13 @@ function enableResize(el) {
   };
 }
 
-// SELECT
-function enableSelect(el) {
-  el.onclick = (e) => {
-    e.stopPropagation();
-
-    if (selected) selected.style.outline = "none";
-
-    selected = el;
-    el.style.outline = "2px solid red";
-  };
-}
-
-// DELETE
-function deleteSelected() {
-  if (selected) {
-    selected.remove();
-    selected = null;
-  }
-}
-
 // TALLA
-function selectSize(e, s) {
+window.selectSize = function(e, s) {
   size = s;
-
-  document.querySelectorAll("#stepSize button").forEach(btn => {
-    btn.classList.remove("bg-white","text-black");
-    btn.classList.add("bg-zinc-800");
-  });
-
-  e.target.classList.add("bg-white","text-black");
-}
+};
 
 // CARRITO
-function addToCart() {
+window.addToCart = function() {
   if (!size) return alert("Selecciona talla");
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -221,10 +166,12 @@ function addToCart() {
     product,
     fit,
     size,
-    colorName: selectedColor.name
+    colorName: selectedColor?.name || "Sin color"
   });
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
   window.location.href = "cart.html";
-}
+};
+
+});
