@@ -5,11 +5,15 @@
   <title>LÖVA | Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FUENTE PRO -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
   </style>
 </head>
@@ -17,61 +21,69 @@
 <body class="bg-black text-white">
 
   <!-- NAV -->
-  <nav class="flex justify-between items-center p-4 bg-zinc-900">
-    <h1 class="text-2xl font-bold">LÖVA</h1>
+  <nav class="flex justify-between items-center px-6 py-4 bg-black border-b border-zinc-800">
+    <h1 class="text-2xl font-bold tracking-widest">LÖVA</h1>
 
-    <div class="flex gap-4">
-      <button onclick="goToCart()">🛒</button>
-      <button onclick="logout()">Salir</button>
+    <div class="flex gap-6 items-center text-sm">
+      <button onclick="goToBuilder()" class="hover:opacity-70">Personalizar</button>
+      <button onclick="goToCart()">Carrito</button>
+      <button onclick="logout()" class="text-red-400">Salir</button>
     </div>
   </nav>
 
   <!-- HERO -->
-  <section class="h-[80vh] flex flex-col justify-center items-center text-center px-4">
+  <section class="h-[90vh] flex flex-col justify-center items-center text-center px-6">
 
-    <h2 class="text-5xl font-bold mb-4">
-      Diseña tu estilo
+    <h2 class="text-6xl font-bold mb-6 tracking-wide leading-tight">
+      CREA TU PROPIO<br>ESTILO
     </h2>
 
-    <p class="mb-6 text-gray-300">
-      Crea prendas únicas con LÖVA
+    <p class="text-gray-400 mb-8 max-w-xl">
+      Diseña prendas únicas con identidad propia. Sin límites. Sin reglas.
     </p>
 
     <button 
       onclick="goToBuilder()"
-      class="bg-white text-black px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-300"
+      class="bg-white text-black px-10 py-4 rounded-full font-semibold hover:scale-105 transition"
     >
-      PERSONALIZAR AHORA
+      EMPEZAR AHORA
     </button>
 
   </section>
 
   <!-- PRODUCTOS -->
-  <section class="px-6 py-10">
+  <section class="px-6 py-16">
 
-    <h3 class="text-3xl mb-6 text-center">Nuestros estilos</h3>
+    <h3 class="text-4xl mb-10 text-center font-semibold">Explora estilos</h3>
 
-    <div class="grid md:grid-cols-4 gap-6">
+    <div class="grid md:grid-cols-4 gap-8">
 
-      <!-- ITEM -->
-      <div class="bg-zinc-900 p-4 rounded-xl">
-        <img src="https://via.placeholder.com/300" class="rounded mb-3">
-        <p class="text-center">Polera</p>
+      <div class="group cursor-pointer">
+        <div class="bg-zinc-900 h-64 rounded-xl mb-3 flex items-center justify-center">
+          <span class="text-gray-500">Polera</span>
+        </div>
+        <p class="text-center group-hover:opacity-70">Poleras</p>
       </div>
 
-      <div class="bg-zinc-900 p-4 rounded-xl">
-        <img src="https://via.placeholder.com/300" class="rounded mb-3">
-        <p class="text-center">Sudadera</p>
+      <div class="group cursor-pointer">
+        <div class="bg-zinc-900 h-64 rounded-xl mb-3 flex items-center justify-center">
+          <span class="text-gray-500">Sudadera</span>
+        </div>
+        <p class="text-center group-hover:opacity-70">Sudaderas</p>
       </div>
 
-      <div class="bg-zinc-900 p-4 rounded-xl">
-        <img src="https://via.placeholder.com/300" class="rounded mb-3">
-        <p class="text-center">Canguro</p>
+      <div class="group cursor-pointer">
+        <div class="bg-zinc-900 h-64 rounded-xl mb-3 flex items-center justify-center">
+          <span class="text-gray-500">Canguro</span>
+        </div>
+        <p class="text-center group-hover:opacity-70">Canguros</p>
       </div>
 
-      <div class="bg-zinc-900 p-4 rounded-xl">
-        <img src="https://via.placeholder.com/300" class="rounded mb-3">
-        <p class="text-center">Polo</p>
+      <div class="group cursor-pointer">
+        <div class="bg-zinc-900 h-64 rounded-xl mb-3 flex items-center justify-center">
+          <span class="text-gray-500">Polo</span>
+        </div>
+        <p class="text-center group-hover:opacity-70">Polos</p>
       </div>
 
     </div>
@@ -79,13 +91,13 @@
   </section>
 
   <!-- CTA FINAL -->
-  <section class="text-center py-10">
+  <section class="text-center py-20 border-t border-zinc-800">
 
-    <h3 class="text-3xl mb-4">Empieza a crear ahora</h3>
+    <h3 class="text-4xl mb-6 font-semibold">Empieza a crear hoy</h3>
 
     <button 
       onclick="goToBuilder()"
-      class="bg-white text-black px-8 py-4 rounded-xl font-bold"
+      class="bg-white text-black px-10 py-4 rounded-full font-semibold hover:scale-105 transition"
     >
       IR AL BUILDER
     </button>
@@ -98,15 +110,15 @@
     <a 
       href="https://wa.me/59164030721"
       target="_blank"
-      class="bg-green-500 px-4 py-3 rounded-full text-black font-bold"
+      class="bg-green-500 px-4 py-3 rounded-full text-black font-bold shadow-lg hover:scale-105 transition"
     >
       WhatsApp
     </a>
 
     <a 
-      href="https://instagram.com/lova_oficial.bo"
+      href="https://instagram.com/"
       target="_blank"
-      class="bg-pink-500 px-4 py-3 rounded-full font-bold"
+      class="bg-pink-500 px-4 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition"
     >
       Instagram
     </a>
