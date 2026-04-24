@@ -55,7 +55,6 @@
 
         <input type="file" id="upload" multiple class="mb-4">
 
-        <!-- CONTROLES -->
         <div class="flex gap-2 mb-4">
           <button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded">Eliminar</button>
           <button onclick="bringForward()" class="bg-zinc-700 px-3 py-2 rounded">⬆</button>
@@ -72,9 +71,9 @@
         <h2 class="text-2xl mb-4">Selecciona talla</h2>
 
         <div class="flex gap-4 mb-4">
-          <button onclick="selectSize('S')" class="bg-zinc-800 px-4 py-2 rounded">S</button>
-          <button onclick="selectSize('M')" class="bg-zinc-800 px-4 py-2 rounded">M</button>
-          <button onclick="selectSize('L')" class="bg-zinc-800 px-4 py-2 rounded">L</button>
+          <button onclick="selectSize(event,'S')" class="bg-zinc-800 px-4 py-2 rounded">S</button>
+          <button onclick="selectSize(event,'M')" class="bg-zinc-800 px-4 py-2 rounded">M</button>
+          <button onclick="selectSize(event,'L')" class="bg-zinc-800 px-4 py-2 rounded">L</button>
         </div>
 
         <button onclick="addToCart()" class="bg-white text-black px-6 py-3 rounded">
@@ -85,10 +84,22 @@
     </div>
 
     <!-- PREVIEW -->
-    <div class="md:w-2/3 flex items-center justify-center">
+    <div class="md:w-2/3 flex flex-col items-center justify-center gap-4">
 
-      <div id="preview" class="relative w-72 h-72 bg-white rounded overflow-hidden">
+      <button onclick="rotateView()" class="bg-zinc-700 px-4 py-2 rounded">
+        Girar prenda
+      </button>
+
+      <div id="preview" class="relative w-72 h-72 flex items-center justify-center">
+
+        <img 
+          id="productImage"
+          src="https://i.imgur.com/1XKQ9ZP.png"
+          class="w-full h-full object-contain absolute"
+        >
+
         <div id="designs" class="absolute inset-0"></div>
+
       </div>
 
     </div>
