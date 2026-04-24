@@ -21,7 +21,7 @@
 
 <!-- PASO 1 -->
 <div id="step1">
-<h2 class="mb-4 text-xl">Prenda</h2>
+<h2 class="mb-4">Prenda</h2>
 
 <div class="grid grid-cols-2 gap-3">
 <button onclick="selectProduct('polera')" class="bg-zinc-800 p-3 rounded">Polera</button>
@@ -33,22 +33,19 @@
 
 <!-- CORTE -->
 <div id="stepFit" class="hidden mt-6">
-<h2 class="mb-4 text-xl">Corte</h2>
+<h2 class="mb-4">Corte</h2>
 
-<div class="flex gap-3">
 <button onclick="selectFit('oversized')" class="bg-zinc-800 px-4 py-2 rounded">Oversized</button>
 <button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
 </div>
-</div>
 
-<!-- 🎨 COLORES -->
+<!-- COLOR -->
 <div id="stepColor" class="hidden mt-6">
-<h2 class="mb-4 text-xl">Color</h2>
-
-<div id="colors" class="grid grid-cols-4 gap-3"></div>
+<h2 class="mb-4">Color</h2>
+<div id="colors" class="grid grid-cols-4 gap-2"></div>
 </div>
 
-<!-- DISEÑO -->
+<!-- UPLOAD -->
 <div id="stepUpload" class="hidden mt-6">
 <input type="file" id="upload" multiple class="mb-3">
 
@@ -56,7 +53,7 @@
 Eliminar
 </button>
 
-<button onclick="nextStep()" class="bg-white text-black px-4 py-2 rounded">
+<button onclick="goSize()" class="bg-white text-black px-4 py-2 rounded">
 Siguiente
 </button>
 </div>
@@ -79,19 +76,17 @@ Agregar
 </div>
 
 <!-- PREVIEW -->
-<div class="md:w-2/3 flex flex-col items-center justify-center gap-4">
+<div class="md:w-2/3 flex items-center justify-center">
 
-<button onclick="toggleSide()" class="bg-white text-black px-4 py-2">
-Frente / Espalda
-</button>
+<div id="preview" class="relative w-96 h-96 bg-zinc-800 rounded">
 
-<div id="preview" class="relative w-96 h-96 flex items-center justify-center">
+<!-- COLOR -->
+<div id="colorLayer" class="absolute inset-0"></div>
 
-<!-- BASE COLOR -->
-<div id="colorLayer" class="absolute w-72 h-80 rounded"></div>
-
-<!-- MOCKUP (AQUI IRÁN TUS IMÁGENES) -->
-<img id="mockup" class="absolute w-72">
+<!-- MOCKUP -->
+<div id="mockup" class="absolute inset-0 flex items-center justify-center text-gray-500">
+Mockup aquí
+</div>
 
 <!-- DISEÑOS -->
 <div id="designs" class="absolute inset-0"></div>
