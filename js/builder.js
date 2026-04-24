@@ -11,17 +11,31 @@ let dragging = false;
 let offsetX = 0;
 let offsetY = 0;
 
+const preview = document.getElementById("preview");
 const mockup = document.getElementById("mockup");
 const designsContainer = document.getElementById("designs");
 
+// 🧥 MOCKUPS
 const mockups = {
-  polera: { front:"assets/mockups/polera_front.png.png", back:"assets/mockups/polera_back.png.png" },
-  polo: { front:"assets/mockups/polo_front.png.png", back:"assets/mockups/polo_back.png.png" },
-  canguro: { front:"assets/mockups/canguro_front.png.png", back:"assets/mockups/canguro_back.png.png" },
-  sudadera: { front:"assets/mockups/sudadera_front.png.png", back:"assets/mockups/sudadera_back.png.png" }
+  polera: {
+    front: "assets/mockups/polera_front.png.png",
+    back: "assets/mockups/polera_back.png.png"
+  },
+  polo: {
+    front: "assets/mockups/polo_front.png.png",
+    back: "assets/mockups/polo_back.png.png"
+  },
+  canguro: {
+    front: "assets/mockups/canguro_front.png.png",
+    back: "assets/mockups/canguro_back.png.png"
+  },
+  sudadera: {
+    front: "assets/mockups/sudadera_front.png.png",
+    back: "assets/mockups/sudadera_back.png.png"
+  }
 };
 
-// 🎨 COLORES COMPLETOS (RESTAURADO TAL CUAL)
+// 🎨 COLORES (COMPLETO RESTAURADO)
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
@@ -49,16 +63,33 @@ const colors = [
 // NAV
 window.goHome = () => window.location.href = "home.html";
 
+// =========================
 // PRODUCTO
+// =========================
 window.selectProduct = function(p) {
   product = p;
+
   mockup.src = mockups[p][view];
 
+  // reset seguro
   designsContainer.innerHTML = "";
+  selected = null;
   selectedColor = null;
+  document.getElementById("colorLayer").style.background = "transparent";
 
   document.getElementById("step1").classList.add("hidden");
-  document.getElementById("stepFit").classList.remove("hidden");
+
+  if (p === "polera") {
+    document.getElementById("stepFit").classList.remove("hidden");
+  } else {
+    showColors();
+  }
+};
+
+// VIEW
+window.setView = function(v) {
+  view = v;
+  if (product) mockup.src = mockups[product][view];
 };
 
 // FIT
@@ -67,7 +98,9 @@ window.selectFit = function(f) {
   showColors();
 };
 
+// =========================
 // COLORES
+// =========================
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
@@ -78,17 +111,9 @@ function showColors() {
   colors.forEach(c => {
     const btn = document.createElement("button");
 
-    btn.className = "flex items-center gap-2 bg-zinc-800 p-2 rounded";
-
-    const box = document.createElement("div");
-    box.style.background = c.value;
-    box.className = "w-6 h-6 rounded";
-
-    const text = document.createElement("span");
-    text.textContent = c.name;
-
-    btn.appendChild(box);
-    btn.appendChild(text);
+    btn.style.background = c.value;
+    btn.title = c.name;
+    btn.className = "w-10 h-10 rounded border";
 
     btn.onclick = () => selectColor(c);
 
@@ -96,52 +121,26 @@ function showColors() {
   });
 }
 
-// COLOR SELECCIONADO
 function selectColor(c) {
   selectedColor = c;
 
-  document.getElementById("selectedColorInfo").textContent =
-    "Color seleccionado: " + c.name;
+  document.getElementById("colorLayer").style.background = c.value;
 
-  applyColor(c.value);
-}
-
-// COLOR INTENSO SOLO EN PRENDA
-function applyColor(hex) {
-  mockup.style.filter = `
-    brightness(0)
-    saturate(100%)
-    sepia(100%)
-    hue-rotate(${getHue(hex)}deg)
-    saturate(900%)
-    brightness(1.25)
-  `;
-}
-
-function getHue(hex) {
-  const r = parseInt(hex.substring(1,3),16);
-  const g = parseInt(hex.substring(3,5),16);
-  const b = parseInt(hex.substring(5,7),16);
-
-  const max = Math.max(r,g,b), min = Math.min(r,g,b);
-  let h = 0;
-
-  if (max !== min) {
-    if (max === r) h = (60 * ((g - b) / (max - min)) + 360) % 360;
-    else if (max === g) h = (60 * ((b - r) / (max - min)) + 120);
-    else h = (60 * ((r - g) / (max - min)) + 240);
-  }
-
-  return h;
-}
-
-// CONTINUAR
-window.goUpload = function() {
   document.getElementById("stepColor").classList.add("hidden");
   document.getElementById("stepUpload").classList.remove("hidden");
+}
+
+// =========================
+// SIGUIENTE PASO
+// =========================
+window.goSize = function() {
+  document.getElementById("stepUpload").classList.add("hidden");
+  document.getElementById("stepSize").classList.remove("hidden");
 };
 
+// =========================
 // UPLOAD
+// =========================
 document.getElementById("upload").addEventListener("change", (e) => {
   const files = e.target.files;
 
@@ -152,7 +151,8 @@ document.getElementById("upload").addEventListener("change", (e) => {
       const img = document.createElement("img");
 
       img.src = ev.target.result;
-      img.className = "absolute w-24 cursor-move";
+      img.className = "absolute w-24 cursor-move select-none";
+
       img.style.left = "120px";
       img.style.top = "120px";
 
@@ -168,47 +168,144 @@ document.getElementById("upload").addEventListener("change", (e) => {
   }
 });
 
-// DRAG / TOUCH / MOVE
-function enableDrag(el){ el.onmousedown=(e)=>{dragging=true;selected=el;offsetX=e.offsetX;offsetY=e.offsetY;} }
-function enableTouch(el){
-  el.addEventListener("touchstart",(e)=>{dragging=true;selected=el;const t=e.touches[0];const r=el.getBoundingClientRect();offsetX=t.clientX-r.left;offsetY=t.clientY-r.top;});
-  el.addEventListener("touchmove",(e)=>{if(!dragging||selected!==el)return;const t=e.touches[0];const r=mockup.getBoundingClientRect();move(el,t.clientX,t.clientY,r);});
-  el.addEventListener("touchend",()=>dragging=false);
+// =========================
+// DRAG PC
+// =========================
+function enableDrag(el) {
+  el.onmousedown = (e) => {
+    dragging = true;
+    selected = el;
+
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+  };
 }
-function move(el,x,y,r){ let px=x-r.left-offsetX; let py=y-r.top-offsetY; el.style.left=px+"px"; el.style.top=py+"px"; }
 
-document.onmousemove=(e)=>{if(!dragging||!selected)return;const r=mockup.getBoundingClientRect();move(selected,e.clientX,e.clientY,r);};
-document.onmouseup=()=>dragging=false;
+// =========================
+// TOUCH MÓVIL
+// =========================
+function enableTouch(el) {
+  el.addEventListener("touchstart", (e) => {
+    dragging = true;
+    selected = el;
 
-// RESIZE
-function enableResize(el){ el.onwheel=(e)=>{e.preventDefault();let w=el.offsetWidth+(e.deltaY<0?10:-10);if(w>20&&w<400)el.style.width=w+"px";}; }
+    const touch = e.touches[0];
+    const rect = el.getBoundingClientRect();
 
-// SELECT
-function enableSelect(el){ el.onclick=(e)=>{e.stopPropagation();if(selected)selected.style.outline="none";selected=el;el.style.outline="2px solid red";}; }
-
-window.deleteSelected = function(){ if(selected){selected.remove();selected=null;} };
-
-// SIZE
-window.selectSize = function(e,s){
-  size=s;
-  document.querySelectorAll("#stepSize button").forEach(b=>{
-    b.classList.remove("bg-white","text-black");
-    b.classList.add("bg-zinc-800");
+    offsetX = touch.clientX - rect.left;
+    offsetY = touch.clientY - rect.top;
   });
+
+  el.addEventListener("touchmove", (e) => {
+    if (!dragging || selected !== el) return;
+
+    const touch = e.touches[0];
+    const rect = preview.getBoundingClientRect();
+
+    moveElement(el, touch.clientX, touch.clientY, rect);
+  });
+
+  el.addEventListener("touchend", () => {
+    dragging = false;
+  });
+}
+
+// =========================
+// MOVE LIMITADO
+// =========================
+function moveElement(el, clientX, clientY, rect) {
+  let x = clientX - rect.left - offsetX;
+  let y = clientY - rect.top - offsetY;
+
+  x = Math.max(0, Math.min(x, rect.width - el.offsetWidth));
+  y = Math.max(0, Math.min(y, rect.height - el.offsetHeight));
+
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+}
+
+// =========================
+// MOVE MOUSE
+// =========================
+document.onmousemove = (e) => {
+  if (!dragging || !selected) return;
+
+  const rect = preview.getBoundingClientRect();
+  moveElement(selected, e.clientX, e.clientY, rect);
+};
+
+document.onmouseup = () => dragging = false;
+
+// =========================
+// RESIZE
+// =========================
+function enableResize(el) {
+  el.onwheel = (e) => {
+    e.preventDefault();
+
+    let w = el.offsetWidth;
+    w += (e.deltaY < 0 ? 10 : -10);
+
+    if (w > 20 && w < 400) {
+      el.style.width = w + "px";
+    }
+  };
+}
+
+// =========================
+// SELECT
+// =========================
+function enableSelect(el) {
+  el.onclick = (e) => {
+    e.stopPropagation();
+
+    if (selected) selected.style.outline = "none";
+
+    selected = el;
+    el.style.outline = "2px solid red";
+  };
+}
+
+// DELETE
+window.deleteSelected = function() {
+  if (selected) {
+    selected.remove();
+    selected = null;
+  }
+};
+
+// =========================
+// SIZE
+// =========================
+window.selectSize = function(e, s) {
+  size = s;
+
+  document.querySelectorAll("#stepSize button").forEach(btn => {
+    btn.classList.remove("bg-white","text-black");
+    btn.classList.add("bg-zinc-800");
+  });
+
   e.target.classList.add("bg-white","text-black");
 };
 
+// =========================
 // CART
-window.addToCart = function(){
-  if(!size)return alert("Selecciona talla");
+// =========================
+window.addToCart = function() {
+  if (!size) return alert("Selecciona talla");
 
-  let cart = JSON.parse(localStorage.getItem("cart"))||[];
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  cart.push({product,fit,size,color:selectedColor?.name});
+  cart.push({
+    product,
+    fit,
+    size,
+    color: selectedColor?.name || "Sin color"
+  });
 
-  localStorage.setItem("cart",JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart));
 
-  window.location.href="cart.html";
+  window.location.href = "cart.html";
 };
 
 });
