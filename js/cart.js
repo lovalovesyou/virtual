@@ -1,7 +1,28 @@
+// 🔥 FIREBASE IMPORTS
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 TU CONFIG (MISMA QUE ANTES)
+const firebaseConfig = {
+  apiKey: "AIzaSyCoptsSyuE612fp1Y-XDUkPhN2PKKotTWE",
+  authDomain: "lova-260b5.firebaseapp.com",
+  projectId: "lova-260b5",
+  appId: "1:955507904645:web:e9aae66b5aaddd3b5c59ec"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// NAV
 function goHome() {
   window.location.href = "home.html";
 }
 
+// CARGAR CARRITO
 function loadCart() {
   const container = document.getElementById("cartContainer");
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -37,6 +58,7 @@ function loadCart() {
   });
 }
 
+// ELIMINAR
 function removeItem(index) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.splice(index, 1);
@@ -45,14 +67,31 @@ function removeItem(index) {
   loadCart();
 }
 
-// WHATSAPP
-function sendWhatsApp() {
+// 🔥 GUARDAR PEDIDO EN FIREBASE
+async function saveOrder(cart) {
+  try {
+    await addDoc(collection(db, "orders"), {
+      items: cart,
+      date: new Date()
+    });
+
+    console.log("Pedido guardado en Firebase");
+  } catch (error) {
+    console.error("Error guardando pedido:", error);
+  }
+}
+
+// WHATSAPP + FIREBASE
+async function sendWhatsApp() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   if (cart.length === 0) {
     alert("Carrito vacío");
     return;
   }
+
+  // 🔥 GUARDAR EN FIREBASE
+  await saveOrder(cart);
 
   let message = "Hola, quiero hacer un pedido:%0A%0A";
 
@@ -64,11 +103,14 @@ function sendWhatsApp() {
     message += `- Diseños: ${item.designs.length} archivo(s)%0A%0A`;
   });
 
-  const phone = "59164030721"; // 🔴 TU NÚMERO
+  const phone = "59164030721";
 
   const url = `https://wa.me/${phone}?text=${message}`;
 
   window.open(url, "_blank");
+
+  // OPCIONAL: limpiar carrito
+  localStorage.removeItem("cart");
 }
 
 // INIT
