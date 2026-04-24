@@ -13,13 +13,29 @@ let offsetY = 0;
 const preview = document.getElementById("preview");
 const shirtShape = document.getElementById("shirtShape");
 
-// COLORES
+// 🎨 TODOS LOS COLORES LÖVA
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
   {name:"Vino", value:"#722f37"},
   {name:"Blanco", value:"#ffffff"},
-  {name:"Negro", value:"#000000"}
+  {name:"Verde pino", value:"#0b3d2e"},
+  {name:"Grafito", value:"#2f2f2f"},
+  {name:"Azul marino", value:"#0a1f44"},
+  {name:"Maringo", value:"#3c3c3c"},
+  {name:"Negro", value:"#000000"},
+  {name:"Blanco Melange", value:"#e5e5e5"},
+  {name:"Verde militar", value:"#4b5320"},
+  {name:"Azul acero", value:"#4682b4"},
+  {name:"Índigo graff", value:"#2c3e75"},
+  {name:"Melange", value:"#cfcfcf"},
+  {name:"Jeans jaspe", value:"#5a6c7d"},
+  {name:"Ocean graff", value:"#2e8b8b"},
+  {name:"Bronce", value:"#cd7f32"},
+  {name:"Arena", value:"#d2b48c"},
+  {name:"Verde menta", value:"#98ff98"},
+  {name:"Arena graff", value:"#c2a680"},
+  {name:"Cereza graff", value:"#8b0000"}
 ];
 
 // NAV
@@ -39,9 +55,21 @@ window.selectProduct = function(p) {
     showColors();
   }
 
-  // CAMBIO DE FORMA
+  // FORMAS
+  if (p === "polera") {
+    shirtShape.setAttribute("d","M50 20 L150 20 L180 70 L150 90 L150 200 L50 200 L50 90 L20 70 Z");
+  }
+
   if (p === "polo") {
     shirtShape.setAttribute("d","M50 20 L150 20 L170 70 L150 90 L150 200 L50 200 L50 90 L30 70 Z");
+  }
+
+  if (p === "canguro") {
+    shirtShape.setAttribute("d","M40 30 L160 30 L180 90 L150 110 L150 200 L50 200 L50 110 L20 90 Z");
+  }
+
+  if (p === "sudadera") {
+    shirtShape.setAttribute("d","M45 25 L155 25 L175 80 L150 100 L150 200 L50 200 L50 100 L25 80 Z");
   }
 };
 
@@ -63,7 +91,8 @@ function showColors() {
     const btn = document.createElement("button");
 
     btn.style.background = c.value;
-    btn.className = "w-10 h-10 rounded";
+    btn.title = c.name;
+    btn.className = "w-10 h-10 rounded border";
 
     btn.onclick = () => selectColor(c);
 
@@ -81,7 +110,7 @@ function selectColor(c) {
   document.getElementById("stepUpload").classList.remove("hidden");
 }
 
-// PASOS
+// PASO
 window.goSize = function() {
   document.getElementById("stepUpload").classList.add("hidden");
   document.getElementById("stepSize").classList.remove("hidden");
@@ -106,6 +135,7 @@ document.getElementById("upload").addEventListener("change", (e) => {
 
       enableDrag(img);
       enableResize(img);
+      enableSelect(img);
 
       container.appendChild(img);
     };
@@ -151,9 +181,36 @@ function enableResize(el) {
   };
 }
 
+// SELECT
+function enableSelect(el) {
+  el.onclick = (e) => {
+    e.stopPropagation();
+
+    if (selected) selected.style.outline = "none";
+
+    selected = el;
+    el.style.outline = "2px solid red";
+  };
+}
+
+// DELETE
+window.deleteSelected = function() {
+  if (selected) {
+    selected.remove();
+    selected = null;
+  }
+};
+
 // TALLA
 window.selectSize = function(e, s) {
   size = s;
+
+  document.querySelectorAll("#stepSize button").forEach(btn => {
+    btn.classList.remove("bg-white","text-black");
+    btn.classList.add("bg-zinc-800");
+  });
+
+  e.target.classList.add("bg-white","text-black");
 };
 
 // CARRITO
