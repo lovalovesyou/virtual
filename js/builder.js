@@ -15,7 +15,6 @@ const preview = document.getElementById("preview");
 const mockup = document.getElementById("mockup");
 const designsContainer = document.getElementById("designs");
 
-// 🧥 MOCKUPS
 const mockups = {
   polera: {
     front: "assets/mockups/polera_front.png.png",
@@ -35,7 +34,6 @@ const mockups = {
   }
 };
 
-// 🎨 COLORES (COMPLETO RESTAURADO)
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
@@ -63,19 +61,14 @@ const colors = [
 // NAV
 window.goHome = () => window.location.href = "home.html";
 
-// =========================
 // PRODUCTO
-// =========================
 window.selectProduct = function(p) {
   product = p;
-
   mockup.src = mockups[p][view];
 
-  // reset seguro
   designsContainer.innerHTML = "";
   selected = null;
   selectedColor = null;
-  document.getElementById("colorLayer").style.background = "transparent";
 
   document.getElementById("step1").classList.add("hidden");
 
@@ -98,9 +91,7 @@ window.selectFit = function(f) {
   showColors();
 };
 
-// =========================
-// COLORES
-// =========================
+// COLORS
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
@@ -112,7 +103,6 @@ function showColors() {
     const btn = document.createElement("button");
 
     btn.style.background = c.value;
-    btn.title = c.name;
     btn.className = "w-10 h-10 rounded border";
 
     btn.onclick = () => selectColor(c);
@@ -121,26 +111,51 @@ function showColors() {
   });
 }
 
+// 🔥 SOLO LA PRENDA CAMBIA DE COLOR
 function selectColor(c) {
   selectedColor = c;
-
-  document.getElementById("colorLayer").style.background = c.value;
+  applyColor(c.value);
 
   document.getElementById("stepColor").classList.add("hidden");
   document.getElementById("stepUpload").classList.remove("hidden");
 }
 
-// =========================
-// SIGUIENTE PASO
-// =========================
+// 🔥 COLOR INTENSO REAL
+function applyColor(hex) {
+  mockup.style.filter = `
+    brightness(0)
+    saturate(100%)
+    sepia(100%)
+    hue-rotate(${getHue(hex)}deg)
+    saturate(900%)
+    brightness(1.25)
+  `;
+}
+
+function getHue(hex) {
+  const r = parseInt(hex.substring(1,3),16);
+  const g = parseInt(hex.substring(3,5),16);
+  const b = parseInt(hex.substring(5,7),16);
+
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h = 0;
+
+  if (max !== min) {
+    if (max === r) h = (60 * ((g - b) / (max - min)) + 360) % 360;
+    else if (max === g) h = (60 * ((b - r) / (max - min)) + 120);
+    else h = (60 * ((r - g) / (max - min)) + 240);
+  }
+
+  return h;
+}
+
+// SIZE
 window.goSize = function() {
   document.getElementById("stepUpload").classList.add("hidden");
   document.getElementById("stepSize").classList.remove("hidden");
 };
 
-// =========================
 // UPLOAD
-// =========================
 document.getElementById("upload").addEventListener("change", (e) => {
   const files = e.target.files;
 
@@ -151,7 +166,7 @@ document.getElementById("upload").addEventListener("change", (e) => {
       const img = document.createElement("img");
 
       img.src = ev.target.result;
-      img.className = "absolute w-24 cursor-move select-none";
+      img.className = "absolute w-24 cursor-move";
 
       img.style.left = "120px";
       img.style.top = "120px";
@@ -168,9 +183,7 @@ document.getElementById("upload").addEventListener("change", (e) => {
   }
 });
 
-// =========================
-// DRAG PC
-// =========================
+// DRAG
 function enableDrag(el) {
   el.onmousedown = (e) => {
     dragging = true;
@@ -181,52 +194,44 @@ function enableDrag(el) {
   };
 }
 
-// =========================
-// TOUCH MÓVIL
-// =========================
+// TOUCH
 function enableTouch(el) {
   el.addEventListener("touchstart", (e) => {
     dragging = true;
     selected = el;
 
-    const touch = e.touches[0];
+    const t = e.touches[0];
     const rect = el.getBoundingClientRect();
 
-    offsetX = touch.clientX - rect.left;
-    offsetY = touch.clientY - rect.top;
+    offsetX = t.clientX - rect.left;
+    offsetY = t.clientY - rect.top;
   });
 
   el.addEventListener("touchmove", (e) => {
     if (!dragging || selected !== el) return;
 
-    const touch = e.touches[0];
+    const t = e.touches[0];
     const rect = preview.getBoundingClientRect();
 
-    moveElement(el, touch.clientX, touch.clientY, rect);
+    moveElement(el, t.clientX, t.clientY, rect);
   });
 
-  el.addEventListener("touchend", () => {
-    dragging = false;
-  });
+  el.addEventListener("touchend", () => dragging = false);
 }
 
-// =========================
-// MOVE LIMITADO
-// =========================
-function moveElement(el, clientX, clientY, rect) {
-  let x = clientX - rect.left - offsetX;
-  let y = clientY - rect.top - offsetY;
+// MOVE
+function moveElement(el, x, y, rect) {
+  let px = x - rect.left - offsetX;
+  let py = y - rect.top - offsetY;
 
-  x = Math.max(0, Math.min(x, rect.width - el.offsetWidth));
-  y = Math.max(0, Math.min(y, rect.height - el.offsetHeight));
+  px = Math.max(0, Math.min(px, rect.width - el.offsetWidth));
+  py = Math.max(0, Math.min(py, rect.height - el.offsetHeight));
 
-  el.style.left = x + "px";
-  el.style.top = y + "px";
+  el.style.left = px + "px";
+  el.style.top = py + "px";
 }
 
-// =========================
-// MOVE MOUSE
-// =========================
+// MOUSE
 document.onmousemove = (e) => {
   if (!dragging || !selected) return;
 
@@ -236,9 +241,7 @@ document.onmousemove = (e) => {
 
 document.onmouseup = () => dragging = false;
 
-// =========================
 // RESIZE
-// =========================
 function enableResize(el) {
   el.onwheel = (e) => {
     e.preventDefault();
@@ -252,9 +255,7 @@ function enableResize(el) {
   };
 }
 
-// =========================
 // SELECT
-// =========================
 function enableSelect(el) {
   el.onclick = (e) => {
     e.stopPropagation();
@@ -274,9 +275,7 @@ window.deleteSelected = function() {
   }
 };
 
-// =========================
 // SIZE
-// =========================
 window.selectSize = function(e, s) {
   size = s;
 
@@ -288,9 +287,7 @@ window.selectSize = function(e, s) {
   e.target.classList.add("bg-white","text-black");
 };
 
-// =========================
 // CART
-// =========================
 window.addToCart = function() {
   if (!size) return alert("Selecciona talla");
 
