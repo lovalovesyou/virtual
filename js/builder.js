@@ -115,4 +115,35 @@ function enableResize(element) {
     }
 
     if (currentWidth > 30 && currentWidth < 300) {
+      element.style.width = currentWidth + "px";
+    }
+  });
+}
+
+// CARRITO
+function addToCart() {
+  const designs = [];
+
+  document.querySelectorAll("#designs img").forEach(img => {
+    designs.push({
+      src: img.src,
+      x: img.style.left,
+      y: img.style.top,
+      width: img.style.width
+    });
+  });
+
+  const item = { product, color, size, designs };
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.push(item);
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("Producto agregado al carrito");
+
+  window.location.href = "cart.html";
+}
+
+    if (currentWidth > 30 && currentWidth < 300) {
       element.style.width = currentWidth + "
