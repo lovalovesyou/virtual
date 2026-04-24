@@ -40,18 +40,18 @@ function selectProduct(p) {
   nextStep();
 }
 
-// COLOR (AHORA CAMBIA LA POLERA REAL)
+// COLOR
 function selectColor(c) {
   color = c;
-  document.getElementById("shirtShape").setAttribute("fill", c);
+  document.getElementById("shirtBase").style.background = c;
   nextStep();
 }
 
-// GIRAR (simulado por espejo)
+// GIRAR (efecto espejo)
 function rotateView() {
   saveCurrentDesigns();
 
-  const shirt = document.getElementById("shirt");
+  const shirt = document.getElementById("shirtBase");
 
   if (currentSide === "front") {
     shirt.style.transform = "scaleX(-1)";
@@ -153,9 +153,7 @@ function enableSelect(element) {
   element.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    if (selectedElement) {
-      selectedElement.style.outline = "none";
-    }
+    if (selectedElement) selectedElement.style.outline = "none";
 
     selectedElement = element;
     element.style.outline = "2px solid red";
@@ -163,9 +161,7 @@ function enableSelect(element) {
 }
 
 document.getElementById("preview").addEventListener("click", () => {
-  if (selectedElement) {
-    selectedElement.style.outline = "none";
-  }
+  if (selectedElement) selectedElement.style.outline = "none";
   selectedElement = null;
 });
 
@@ -179,15 +175,11 @@ function deleteSelected() {
 
 // CAPAS
 function bringForward() {
-  if (selectedElement) {
-    selectedElement.style.zIndex = parseInt(selectedElement.style.zIndex) + 1;
-  }
+  if (selectedElement) selectedElement.style.zIndex++;
 }
 
 function sendBackward() {
-  if (selectedElement) {
-    selectedElement.style.zIndex = parseInt(selectedElement.style.zIndex) - 1;
-  }
+  if (selectedElement) selectedElement.style.zIndex--;
 }
 
 // DRAG
@@ -220,7 +212,6 @@ function enableResize(element) {
     e.preventDefault();
 
     let w = element.offsetWidth;
-
     w += (e.deltaY < 0 ? 10 : -10);
 
     if (w > 30 && w < 300) {
@@ -250,7 +241,7 @@ function addToCart() {
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
-  alert("Producto agregado al carrito");
+  alert("Producto agregado");
 
   window.location.href = "cart.html";
 }
