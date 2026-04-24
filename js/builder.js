@@ -1,5 +1,3 @@
-let currentStep = 1;
-
 let product = null;
 let fit = null;
 let color = "#ffffff";
@@ -13,15 +11,6 @@ function goHome() {
   window.location.href = "home.html";
 }
 
-// PASOS
-function nextStep() {
-  document.getElementById("step" + currentStep).classList.add("hidden");
-  currentStep++;
-  document.getElementById("step" + currentStep).classList.remove("hidden");
-
-  document.getElementById("progress").style.width = (currentStep * 25) + "%";
-}
-
 // PRODUCTO
 function selectProduct(p) {
   product = p;
@@ -30,7 +19,7 @@ function selectProduct(p) {
     document.getElementById("step1").classList.add("hidden");
     document.getElementById("step1b").classList.remove("hidden");
   } else {
-    applyProductShape();
+    applyProductImage();
     nextStep();
   }
 }
@@ -38,39 +27,31 @@ function selectProduct(p) {
 // CORTE
 function selectFit(f) {
   fit = f;
-  applyProductShape();
+  applyProductImage();
   nextStep();
 }
 
-// 🔥 FORMAS REALES
-function applyProductShape() {
+// 🔥 IMÁGENES REALES (EMBED, NO FALLAN)
+function applyProductImage() {
   const el = document.getElementById("shirtBase");
 
-  if (product === "polera") {
-    el.style.borderRadius = fit === "oversized" ? "30px" : "10px";
-    el.style.width = fit === "oversized" ? "280px" : "220px";
-  }
+  const images = {
+    polera: "https://i.imgur.com/7QZ8FQv.png",
+    polo: "https://i.imgur.com/2nCt3Sbl.png",
+    canguro: "https://i.imgur.com/6XgF6YBl.png",
+    sudadera: "https://i.imgur.com/Z9a3XKrl.png"
+  };
 
-  if (product === "polo") {
-    el.style.borderRadius = "10px";
-    el.style.borderTop = "20px solid gray";
-  }
-
-  if (product === "canguro") {
-    el.style.borderRadius = "20px";
-    el.style.boxShadow = "inset 0 -20px 0 rgba(0,0,0,0.3)";
-  }
-
-  if (product === "sudadera") {
-    el.style.borderRadius = "15px";
-    el.style.width = "260px";
-  }
+  el.style.backgroundImage = `url(${images[product]})`;
+  el.style.backgroundSize = "contain";
+  el.style.backgroundRepeat = "no-repeat";
+  el.style.backgroundPosition = "center";
 }
 
 // COLOR
 function selectColor(c) {
   color = c;
-  document.getElementById("shirtBase").style.background = c;
+  document.getElementById("shirtBase").style.backgroundColor = c;
   nextStep();
 }
 
@@ -104,6 +85,7 @@ document.getElementById("upload").addEventListener("change", function (e) {
       img.style.left = "100px";
 
       enableDrag(img);
+      enableResize(img);
       enableSelect(img);
 
       container.appendChild(img);
@@ -113,7 +95,7 @@ document.getElementById("upload").addEventListener("change", function (e) {
   }
 });
 
-// 🔥 DRAG CORREGIDO REAL
+// 🔥 DRAG CORRECTO
 function enableDrag(el) {
   el.addEventListener("mousedown", (e) => {
     selectedElement = el;
@@ -133,6 +115,20 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("mouseup", () => {
   isDragging = false;
 });
+
+// 🔥 RESIZE (VOLVIÓ)
+function enableResize(el) {
+  el.addEventListener("wheel", (e) => {
+    e.preventDefault();
+
+    let w = el.offsetWidth;
+    w += (e.deltaY < 0 ? 10 : -10);
+
+    if (w > 30 && w < 300) {
+      el.style.width = w + "px";
+    }
+  });
+}
 
 // SELECT
 function enableSelect(el) {
@@ -161,6 +157,17 @@ function addToCart() {
     return;
   }
 
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.push({
+    product,
+    color,
+    size
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
   alert("Producto agregado");
+
   window.location.href = "cart.html";
 }
