@@ -144,6 +144,3 @@ function addToCart() {
 
   window.location.href = "cart.html";
 }
-
-    if (currentWidth > 30 && currentWidth < 300) {
-      element.style.width = currentWidth + "
