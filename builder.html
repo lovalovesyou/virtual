@@ -21,7 +21,6 @@
 
 <div id="step1">
 <h2 class="mb-4">Prenda</h2>
-
 <div class="grid grid-cols-2 gap-3">
 <button onclick="selectProduct('polera')" class="bg-zinc-800 p-3 rounded">Polera</button>
 <button onclick="selectProduct('polo')" class="bg-zinc-800 p-3 rounded">Polo</button>
@@ -32,7 +31,6 @@
 
 <div id="stepFit" class="hidden mt-6">
 <h2 class="mb-4">Corte</h2>
-
 <button onclick="selectFit('oversized')" class="bg-zinc-800 px-4 py-2 rounded">Oversized</button>
 <button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
 </div>
@@ -44,14 +42,8 @@
 
 <div id="stepUpload" class="hidden mt-6">
 <input type="file" id="upload" multiple class="mb-3">
-
-<button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">
-Eliminar
-</button>
-
-<button onclick="goSize()" class="bg-white text-black px-4 py-2 rounded">
-Siguiente
-</button>
+<button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">Eliminar</button>
+<button onclick="goSize()" class="bg-white text-black px-4 py-2 rounded">Siguiente</button>
 </div>
 
 <div id="stepSize" class="hidden mt-6">
@@ -69,14 +61,19 @@ Agregar
 </div>
 
 <!-- PREVIEW -->
-<div class="md:w-2/3 flex items-center justify-center">
+<div class="md:w-2/3 flex flex-col items-center justify-center gap-4">
 
-<div id="preview" class="relative w-96 h-96 bg-zinc-800 rounded flex items-center justify-center">
+<!-- BOTÓN GIRAR -->
+<div class="flex gap-4">
+<button onclick="setView('front')" class="bg-zinc-800 px-4 py-2 rounded">Frente</button>
+<button onclick="setView('back')" class="bg-zinc-800 px-4 py-2 rounded">Espalda</button>
+</div>
 
-<svg viewBox="0 0 200 220" class="w-72">
-  <path id="shirtShape" fill="#ffffff"
-  d="M50 20 L150 20 L180 70 L150 90 L150 200 L50 200 L50 90 L20 70 Z"/>
-</svg>
+<div id="preview" class="relative w-96 h-96 bg-zinc-800 rounded overflow-hidden">
+
+<img id="mockup" class="absolute w-full h-full object-contain">
+
+<div id="colorLayer" class="absolute inset-0 mix-blend-multiply"></div>
 
 <div id="designs" class="absolute inset-0"></div>
 
@@ -87,6 +84,5 @@ Agregar
 </div>
 
 <script src="js/builder.js"></script>
-
 </body>
 </html>
