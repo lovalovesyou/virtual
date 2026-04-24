@@ -13,8 +13,9 @@ let offsetY = 0;
 
 const preview = document.getElementById("preview");
 const mockup = document.getElementById("mockup");
+const designsContainer = document.getElementById("designs");
 
-// 🧥 MOCKUPS LOCALES (NUNCA FALLAN)
+// 🧥 MOCKUPS
 const mockups = {
   polera: {
     front: "assets/mockups/polera_front.png",
@@ -34,7 +35,7 @@ const mockups = {
   }
 };
 
-// 🎨 COLORES COMPLETOS
+// 🎨 COLORES (COMPLETO RESTAURADO)
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
@@ -62,11 +63,19 @@ const colors = [
 // NAV
 window.goHome = () => window.location.href = "home.html";
 
+// =========================
 // PRODUCTO
+// =========================
 window.selectProduct = function(p) {
   product = p;
 
   mockup.src = mockups[p][view];
+
+  // reset seguro
+  designsContainer.innerHTML = "";
+  selected = null;
+  selectedColor = null;
+  document.getElementById("colorLayer").style.background = "transparent";
 
   document.getElementById("step1").classList.add("hidden");
 
@@ -77,22 +86,21 @@ window.selectProduct = function(p) {
   }
 };
 
-// CAMBIAR VISTA
+// VIEW
 window.setView = function(v) {
   view = v;
-
-  if (product) {
-    mockup.src = mockups[product][view];
-  }
+  if (product) mockup.src = mockups[product][view];
 };
 
-// CORTE
+// FIT
 window.selectFit = function(f) {
   fit = f;
   showColors();
 };
 
+// =========================
 // COLORES
+// =========================
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
@@ -113,7 +121,6 @@ function showColors() {
   });
 }
 
-// COLOR
 function selectColor(c) {
   selectedColor = c;
 
@@ -123,16 +130,19 @@ function selectColor(c) {
   document.getElementById("stepUpload").classList.remove("hidden");
 }
 
-// PASO
+// =========================
+// SIGUIENTE PASO
+// =========================
 window.goSize = function() {
   document.getElementById("stepUpload").classList.add("hidden");
   document.getElementById("stepSize").classList.remove("hidden");
 };
 
-// SUBIR
+// =========================
+// UPLOAD
+// =========================
 document.getElementById("upload").addEventListener("change", (e) => {
   const files = e.target.files;
-  const container = document.getElementById("designs");
 
   for (let file of files) {
     const reader = new FileReader();
@@ -141,23 +151,26 @@ document.getElementById("upload").addEventListener("change", (e) => {
       const img = document.createElement("img");
 
       img.src = ev.target.result;
-      img.className = "absolute w-24 cursor-move";
+      img.className = "absolute w-24 cursor-move select-none";
 
       img.style.left = "120px";
       img.style.top = "120px";
 
       enableDrag(img);
+      enableTouch(img);
       enableResize(img);
       enableSelect(img);
 
-      container.appendChild(img);
+      designsContainer.appendChild(img);
     };
 
     reader.readAsDataURL(file);
   }
 });
 
-// DRAG
+// =========================
+// DRAG PC
+// =========================
 function enableDrag(el) {
   el.onmousedown = (e) => {
     dragging = true;
@@ -168,24 +181,69 @@ function enableDrag(el) {
   };
 }
 
+// =========================
+// TOUCH MÓVIL
+// =========================
+function enableTouch(el) {
+  el.addEventListener("touchstart", (e) => {
+    dragging = true;
+    selected = el;
+
+    const touch = e.touches[0];
+    const rect = el.getBoundingClientRect();
+
+    offsetX = touch.clientX - rect.left;
+    offsetY = touch.clientY - rect.top;
+  });
+
+  el.addEventListener("touchmove", (e) => {
+    if (!dragging || selected !== el) return;
+
+    const touch = e.touches[0];
+    const rect = preview.getBoundingClientRect();
+
+    moveElement(el, touch.clientX, touch.clientY, rect);
+  });
+
+  el.addEventListener("touchend", () => {
+    dragging = false;
+  });
+}
+
+// =========================
+// MOVE LIMITADO
+// =========================
+function moveElement(el, clientX, clientY, rect) {
+  let x = clientX - rect.left - offsetX;
+  let y = clientY - rect.top - offsetY;
+
+  x = Math.max(0, Math.min(x, rect.width - el.offsetWidth));
+  y = Math.max(0, Math.min(y, rect.height - el.offsetHeight));
+
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+}
+
+// =========================
+// MOVE MOUSE
+// =========================
 document.onmousemove = (e) => {
   if (!dragging || !selected) return;
 
   const rect = preview.getBoundingClientRect();
-
-  selected.style.left = (e.clientX - rect.left - offsetX) + "px";
-  selected.style.top = (e.clientY - rect.top - offsetY) + "px";
+  moveElement(selected, e.clientX, e.clientY, rect);
 };
 
 document.onmouseup = () => dragging = false;
 
+// =========================
 // RESIZE
+// =========================
 function enableResize(el) {
   el.onwheel = (e) => {
     e.preventDefault();
 
     let w = el.offsetWidth;
-
     w += (e.deltaY < 0 ? 10 : -10);
 
     if (w > 20 && w < 400) {
@@ -194,7 +252,9 @@ function enableResize(el) {
   };
 }
 
+// =========================
 // SELECT
+// =========================
 function enableSelect(el) {
   el.onclick = (e) => {
     e.stopPropagation();
@@ -214,7 +274,9 @@ window.deleteSelected = function() {
   }
 };
 
-// TALLA
+// =========================
+// SIZE
+// =========================
 window.selectSize = function(e, s) {
   size = s;
 
@@ -226,7 +288,9 @@ window.selectSize = function(e, s) {
   e.target.classList.add("bg-white","text-black");
 };
 
-// CARRITO
+// =========================
+// CART
+// =========================
 window.addToCart = function() {
   if (!size) return alert("Selecciona talla");
 
