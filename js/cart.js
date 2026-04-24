@@ -16,13 +16,17 @@ function loadCart() {
     div.innerHTML = `
       <div>
         <p>Producto: ${item.product}</p>
-        <p>Color: ${item.color}</p>
+        <p>Color: ${item.colorName}</p>
         <p>Talla: ${item.size}</p>
       </div>
 
-      <button onclick="removeItem(${index})" class="bg-red-500 px-3 py-1 rounded">
-        Eliminar
-      </button>
+      <div class="flex items-center gap-3">
+        <div style="background:${item.colorValue}" class="w-6 h-6 rounded"></div>
+
+        <button onclick="removeItem(${index})" class="bg-red-500 px-3 py-1 rounded">
+          Eliminar
+        </button>
+      </div>
     `;
 
     container.appendChild(div);
