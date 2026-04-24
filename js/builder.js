@@ -1,19 +1,12 @@
 let currentStep = 1;
 
 let product = null;
+let fit = null;
 let color = "#ffffff";
 let size = null;
 
 let selectedElement = null;
-let offsetX = 0;
-let offsetY = 0;
-
-let currentSide = "front";
-
-let designsData = {
-  front: [],
-  back: []
-};
+let isDragging = false;
 
 // NAV
 function goHome() {
@@ -26,18 +19,52 @@ function nextStep() {
   currentStep++;
   document.getElementById("step" + currentStep).classList.remove("hidden");
 
-  updateProgress();
-}
-
-// PROGRESS
-function updateProgress() {
   document.getElementById("progress").style.width = (currentStep * 25) + "%";
 }
 
 // PRODUCTO
 function selectProduct(p) {
   product = p;
+
+  if (p === "polera") {
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step1b").classList.remove("hidden");
+  } else {
+    applyProductShape();
+    nextStep();
+  }
+}
+
+// CORTE
+function selectFit(f) {
+  fit = f;
+  applyProductShape();
   nextStep();
+}
+
+// 🔥 FORMAS REALES
+function applyProductShape() {
+  const el = document.getElementById("shirtBase");
+
+  if (product === "polera") {
+    el.style.borderRadius = fit === "oversized" ? "30px" : "10px";
+    el.style.width = fit === "oversized" ? "280px" : "220px";
+  }
+
+  if (product === "polo") {
+    el.style.borderRadius = "10px";
+    el.style.borderTop = "20px solid gray";
+  }
+
+  if (product === "canguro") {
+    el.style.borderRadius = "20px";
+    el.style.boxShadow = "inset 0 -20px 0 rgba(0,0,0,0.3)";
+  }
+
+  if (product === "sudadera") {
+    el.style.borderRadius = "15px";
+    el.style.width = "260px";
+  }
 }
 
 // COLOR
@@ -45,64 +72,6 @@ function selectColor(c) {
   color = c;
   document.getElementById("shirtBase").style.background = c;
   nextStep();
-}
-
-// GIRAR (efecto espejo)
-function rotateView() {
-  saveCurrentDesigns();
-
-  const shirt = document.getElementById("shirtBase");
-
-  if (currentSide === "front") {
-    shirt.style.transform = "scaleX(-1)";
-    currentSide = "back";
-  } else {
-    shirt.style.transform = "scaleX(1)";
-    currentSide = "front";
-  }
-
-  loadDesigns();
-}
-
-// GUARDAR
-function saveCurrentDesigns() {
-  const arr = [];
-
-  document.querySelectorAll("#designs img").forEach(img => {
-    arr.push({
-      src: img.src,
-      x: img.style.left,
-      y: img.style.top,
-      width: img.style.width,
-      z: img.style.zIndex
-    });
-  });
-
-  designsData[currentSide] = arr;
-}
-
-// CARGAR
-function loadDesigns() {
-  const container = document.getElementById("designs");
-  container.innerHTML = "";
-
-  designsData[currentSide].forEach(d => {
-    const img = document.createElement("img");
-
-    img.src = d.src;
-    img.className = "absolute cursor-move";
-
-    img.style.left = d.x;
-    img.style.top = d.y;
-    img.style.width = d.width;
-    img.style.zIndex = d.z;
-
-    enableDrag(img);
-    enableResize(img);
-    enableSelect(img);
-
-    container.appendChild(img);
-  });
 }
 
 // TALLA
@@ -114,7 +83,6 @@ function selectSize(e, s) {
     btn.classList.add("bg-zinc-800");
   });
 
-  e.target.classList.remove("bg-zinc-800");
   e.target.classList.add("bg-white", "text-black");
 }
 
@@ -132,13 +100,10 @@ document.getElementById("upload").addEventListener("change", function (e) {
       img.src = event.target.result;
       img.className = "absolute w-24 cursor-move";
 
-      img.style.top = "50%";
-      img.style.left = "50%";
-      img.style.transform = "translate(-50%, -50%)";
-      img.style.zIndex = 1;
+      img.style.top = "100px";
+      img.style.left = "100px";
 
       enableDrag(img);
-      enableResize(img);
       enableSelect(img);
 
       container.appendChild(img);
@@ -148,22 +113,38 @@ document.getElementById("upload").addEventListener("change", function (e) {
   }
 });
 
-// SELECCIÓN
-function enableSelect(element) {
-  element.addEventListener("click", (e) => {
+// 🔥 DRAG CORREGIDO REAL
+function enableDrag(el) {
+  el.addEventListener("mousedown", (e) => {
+    selectedElement = el;
+    isDragging = true;
+  });
+}
+
+document.addEventListener("mousemove", (e) => {
+  if (isDragging && selectedElement) {
+    const rect = document.getElementById("preview").getBoundingClientRect();
+
+    selectedElement.style.left = (e.clientX - rect.left) + "px";
+    selectedElement.style.top = (e.clientY - rect.top) + "px";
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
+
+// SELECT
+function enableSelect(el) {
+  el.addEventListener("click", (e) => {
     e.stopPropagation();
 
     if (selectedElement) selectedElement.style.outline = "none";
 
-    selectedElement = element;
-    element.style.outline = "2px solid red";
+    selectedElement = el;
+    el.style.outline = "2px solid red";
   });
 }
-
-document.getElementById("preview").addEventListener("click", () => {
-  if (selectedElement) selectedElement.style.outline = "none";
-  selectedElement = null;
-});
 
 // ELIMINAR
 function deleteSelected() {
@@ -173,75 +154,13 @@ function deleteSelected() {
   }
 }
 
-// CAPAS
-function bringForward() {
-  if (selectedElement) selectedElement.style.zIndex++;
-}
-
-function sendBackward() {
-  if (selectedElement) selectedElement.style.zIndex--;
-}
-
-// DRAG
-function enableDrag(element) {
-  element.addEventListener("mousedown", (e) => {
-    selectedElement = element;
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
-  });
-}
-
-document.addEventListener("mousemove", (e) => {
-  if (selectedElement) {
-    const rect = document.getElementById("preview").getBoundingClientRect();
-
-    let x = e.clientX - rect.left - offsetX;
-    let y = e.clientY - rect.top - offsetY;
-
-    selectedElement.style.left = x + "px";
-    selectedElement.style.top = y + "px";
-    selectedElement.style.transform = "none";
-  }
-});
-
-document.addEventListener("mouseup", () => {});
-
-// RESIZE
-function enableResize(element) {
-  element.addEventListener("wheel", (e) => {
-    e.preventDefault();
-
-    let w = element.offsetWidth;
-    w += (e.deltaY < 0 ? 10 : -10);
-
-    if (w > 30 && w < 300) {
-      element.style.width = w + "px";
-    }
-  });
-}
-
 // CARRITO
 function addToCart() {
   if (!size) {
-    alert("Selecciona una talla");
+    alert("Selecciona talla");
     return;
   }
 
-  saveCurrentDesigns();
-
-  const item = {
-    product,
-    color,
-    size,
-    designs: designsData
-  };
-
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  cart.push(item);
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-
   alert("Producto agregado");
-
   window.location.href = "cart.html";
 }
