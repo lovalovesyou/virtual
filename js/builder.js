@@ -14,27 +14,27 @@ let offsetY = 0;
 const preview = document.getElementById("preview");
 const mockup = document.getElementById("mockup");
 
-// 🧥 MOCKUPS
+// 🧥 MOCKUPS LOCALES (NUNCA FALLAN)
 const mockups = {
   polera: {
-    front: "https://i.imgur.com/3QZ6FQx.png",
-    back: "https://i.imgur.com/8Qf6K8D.png"
+    front: "assets/mockups/polera_front.png",
+    back: "assets/mockups/polera_back.png"
   },
   polo: {
-    front: "https://i.imgur.com/Ug6XJcP.png",
-    back: "https://i.imgur.com/dqQX1Kf.png"
+    front: "assets/mockups/polo_front.png",
+    back: "assets/mockups/polo_back.png"
   },
   canguro: {
-    front: "https://i.imgur.com/7kCeFQp.png",
-    back: "https://i.imgur.com/2XnKpQm.png"
+    front: "assets/mockups/canguro_front.png",
+    back: "assets/mockups/canguro_back.png"
   },
   sudadera: {
-    front: "https://i.imgur.com/4R3G5YF.png",
-    back: "https://i.imgur.com/w8lFZkH.png"
+    front: "assets/mockups/sudadera_front.png",
+    back: "assets/mockups/sudadera_back.png"
   }
 };
 
-// 🎨 TODOS LOS COLORES LÖVA (NO SE TOCAN)
+// 🎨 COLORES COMPLETOS
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
@@ -92,7 +92,7 @@ window.selectFit = function(f) {
   showColors();
 };
 
-// COLORES (TODOS)
+// COLORES
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
