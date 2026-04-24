@@ -9,7 +9,7 @@ let offsetY = 0;
 
 const preview = document.getElementById("preview");
 
-// 🎨 COLORES
+// COLORES
 const colors = [
   "#b11226","#6b8e23","#722f37","#ffffff","#0b3d2e",
   "#2f2f2f","#0a1f44","#3c3c3c","#000000","#e5e5e5"
@@ -38,7 +38,7 @@ function selectFit(f) {
   showColors();
 }
 
-// MOSTRAR COLORES
+// COLORES
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("step1").classList.add("hidden");
@@ -64,7 +64,7 @@ function selectColor(c) {
   document.getElementById("stepUpload").classList.remove("hidden");
 }
 
-// IR A TALLA
+// 👉 ESTE ERA EL ERROR PRINCIPAL
 function goSize() {
   document.getElementById("stepUpload").classList.add("hidden");
   document.getElementById("stepSize").classList.remove("hidden");
@@ -98,7 +98,7 @@ document.getElementById("upload").addEventListener("change", (e) => {
   }
 });
 
-// DRAG CORRECTO
+// DRAG
 function enableDrag(el) {
   el.onmousedown = (e) => {
     dragging = true;
@@ -118,11 +118,9 @@ document.onmousemove = (e) => {
   selected.style.top = (e.clientY - rect.top - offsetY) + "px";
 };
 
-document.onmouseup = () => {
-  dragging = false;
-};
+document.onmouseup = () => dragging = false;
 
-// RESIZE FUNCIONANDO
+// RESIZE
 function enableResize(el) {
   el.onwheel = (e) => {
     e.preventDefault();
@@ -159,8 +157,15 @@ function deleteSelected() {
 }
 
 // TALLA
-function selectSize(s) {
+function selectSize(e, s) {
   size = s;
+
+  document.querySelectorAll("#stepSize button").forEach(btn => {
+    btn.classList.remove("bg-white","text-black");
+    btn.classList.add("bg-zinc-800");
+  });
+
+  e.target.classList.add("bg-white","text-black");
 }
 
 // CARRITO
@@ -173,6 +178,5 @@ function addToCart() {
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
-  alert("Agregado");
   window.location.href = "cart.html";
 }
