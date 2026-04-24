@@ -8,6 +8,11 @@ let selectedElement = null;
 let offsetX = 0;
 let offsetY = 0;
 
+let currentSide = "front";
+
+const frontImage = "https://i.imgur.com/1XKQ9ZP.png";
+const backImage = "https://i.imgur.com/Z6X6K4F.png";
+
 // NAV
 function goHome() {
   window.location.href = "home.html";
@@ -36,16 +41,36 @@ function selectProduct(p) {
 // COLOR
 function selectColor(c) {
   color = c;
-  document.getElementById("preview").style.background = c;
   nextStep();
 }
 
-// TALLA
-function selectSize(s) {
-  size = s;
+// GIRAR PRENDA
+function rotateView() {
+  const img = document.getElementById("productImage");
+
+  if (currentSide === "front") {
+    img.src = backImage;
+    currentSide = "back";
+  } else {
+    img.src = frontImage;
+    currentSide = "front";
+  }
 }
 
-// SUBIR IMÁGENES (BASE64)
+// TALLA
+function selectSize(e, s) {
+  size = s;
+
+  document.querySelectorAll("#step4 button").forEach(btn => {
+    btn.classList.remove("bg-white", "text-black");
+    btn.classList.add("bg-zinc-800");
+  });
+
+  e.target.classList.remove("bg-zinc-800");
+  e.target.classList.add("bg-white", "text-black");
+}
+
+// SUBIR IMÁGENES
 document.getElementById("upload").addEventListener("change", function (e) {
   const files = e.target.files;
   const container = document.getElementById("designs");
@@ -164,6 +189,11 @@ function enableResize(element) {
 
 // CARRITO
 function addToCart() {
+  if (!size) {
+    alert("Selecciona una talla");
+    return;
+  }
+
   const designs = [];
 
   document.querySelectorAll("#designs img").forEach(img => {
