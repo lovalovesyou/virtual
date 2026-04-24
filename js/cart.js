@@ -64,7 +64,7 @@ function sendWhatsApp() {
     message += `- Diseños: ${item.designs.length} archivo(s)%0A%0A`;
   });
 
-  const phone = "591XXXXXXXX"; // 🔴 TU NÚMERO
+  const phone = "59164030721"; // 🔴 TU NÚMERO
 
   const url = `https://wa.me/${phone}?text=${message}`;
 
