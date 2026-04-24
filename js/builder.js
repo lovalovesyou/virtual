@@ -11,29 +11,17 @@ let dragging = false;
 let offsetX = 0;
 let offsetY = 0;
 
-const preview = document.getElementById("preview");
 const mockup = document.getElementById("mockup");
 const designsContainer = document.getElementById("designs");
 
 const mockups = {
-  polera: {
-    front: "assets/mockups/polera_front.png.png",
-    back: "assets/mockups/polera_back.png.png"
-  },
-  polo: {
-    front: "assets/mockups/polo_front.png.png",
-    back: "assets/mockups/polo_back.png.png"
-  },
-  canguro: {
-    front: "assets/mockups/canguro_front.png.png",
-    back: "assets/mockups/canguro_back.png.png"
-  },
-  sudadera: {
-    front: "assets/mockups/sudadera_front.png.png",
-    back: "assets/mockups/sudadera_back.png.png"
-  }
+  polera: { front:"assets/mockups/polera_front.png", back:"assets/mockups/polera_back.png" },
+  polo: { front:"assets/mockups/polo_front.png", back:"assets/mockups/polo_back.png" },
+  canguro: { front:"assets/mockups/canguro_front.png", back:"assets/mockups/canguro_back.png" },
+  sudadera: { front:"assets/mockups/sudadera_front.png", back:"assets/mockups/sudadera_back.png" }
 };
 
+// 🎨 COLORES COMPLETOS (RESTAURADO TAL CUAL)
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
@@ -67,22 +55,10 @@ window.selectProduct = function(p) {
   mockup.src = mockups[p][view];
 
   designsContainer.innerHTML = "";
-  selected = null;
   selectedColor = null;
 
   document.getElementById("step1").classList.add("hidden");
-
-  if (p === "polera") {
-    document.getElementById("stepFit").classList.remove("hidden");
-  } else {
-    showColors();
-  }
-};
-
-// VIEW
-window.setView = function(v) {
-  view = v;
-  if (product) mockup.src = mockups[product][view];
+  document.getElementById("stepFit").classList.remove("hidden");
 };
 
 // FIT
@@ -91,7 +67,7 @@ window.selectFit = function(f) {
   showColors();
 };
 
-// COLORS
+// COLORES
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
@@ -102,8 +78,17 @@ function showColors() {
   colors.forEach(c => {
     const btn = document.createElement("button");
 
-    btn.style.background = c.value;
-    btn.className = "w-10 h-10 rounded border";
+    btn.className = "flex items-center gap-2 bg-zinc-800 p-2 rounded";
+
+    const box = document.createElement("div");
+    box.style.background = c.value;
+    box.className = "w-6 h-6 rounded";
+
+    const text = document.createElement("span");
+    text.textContent = c.name;
+
+    btn.appendChild(box);
+    btn.appendChild(text);
 
     btn.onclick = () => selectColor(c);
 
@@ -111,16 +96,17 @@ function showColors() {
   });
 }
 
-// 🔥 SOLO LA PRENDA CAMBIA DE COLOR
+// COLOR SELECCIONADO
 function selectColor(c) {
   selectedColor = c;
-  applyColor(c.value);
 
-  document.getElementById("stepColor").classList.add("hidden");
-  document.getElementById("stepUpload").classList.remove("hidden");
+  document.getElementById("selectedColorInfo").textContent =
+    "Color seleccionado: " + c.name;
+
+  applyColor(c.value);
 }
 
-// 🔥 COLOR INTENSO REAL
+// COLOR INTENSO SOLO EN PRENDA
 function applyColor(hex) {
   mockup.style.filter = `
     brightness(0)
@@ -149,10 +135,10 @@ function getHue(hex) {
   return h;
 }
 
-// SIZE
-window.goSize = function() {
-  document.getElementById("stepUpload").classList.add("hidden");
-  document.getElementById("stepSize").classList.remove("hidden");
+// CONTINUAR
+window.goUpload = function() {
+  document.getElementById("stepColor").classList.add("hidden");
+  document.getElementById("stepUpload").classList.remove("hidden");
 };
 
 // UPLOAD
@@ -167,7 +153,6 @@ document.getElementById("upload").addEventListener("change", (e) => {
 
       img.src = ev.target.result;
       img.className = "absolute w-24 cursor-move";
-
       img.style.left = "120px";
       img.style.top = "120px";
 
@@ -183,126 +168,47 @@ document.getElementById("upload").addEventListener("change", (e) => {
   }
 });
 
-// DRAG
-function enableDrag(el) {
-  el.onmousedown = (e) => {
-    dragging = true;
-    selected = el;
-
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
-  };
+// DRAG / TOUCH / MOVE
+function enableDrag(el){ el.onmousedown=(e)=>{dragging=true;selected=el;offsetX=e.offsetX;offsetY=e.offsetY;} }
+function enableTouch(el){
+  el.addEventListener("touchstart",(e)=>{dragging=true;selected=el;const t=e.touches[0];const r=el.getBoundingClientRect();offsetX=t.clientX-r.left;offsetY=t.clientY-r.top;});
+  el.addEventListener("touchmove",(e)=>{if(!dragging||selected!==el)return;const t=e.touches[0];const r=mockup.getBoundingClientRect();move(el,t.clientX,t.clientY,r);});
+  el.addEventListener("touchend",()=>dragging=false);
 }
+function move(el,x,y,r){ let px=x-r.left-offsetX; let py=y-r.top-offsetY; el.style.left=px+"px"; el.style.top=py+"px"; }
 
-// TOUCH
-function enableTouch(el) {
-  el.addEventListener("touchstart", (e) => {
-    dragging = true;
-    selected = el;
-
-    const t = e.touches[0];
-    const rect = el.getBoundingClientRect();
-
-    offsetX = t.clientX - rect.left;
-    offsetY = t.clientY - rect.top;
-  });
-
-  el.addEventListener("touchmove", (e) => {
-    if (!dragging || selected !== el) return;
-
-    const t = e.touches[0];
-    const rect = preview.getBoundingClientRect();
-
-    moveElement(el, t.clientX, t.clientY, rect);
-  });
-
-  el.addEventListener("touchend", () => dragging = false);
-}
-
-// MOVE
-function moveElement(el, x, y, rect) {
-  let px = x - rect.left - offsetX;
-  let py = y - rect.top - offsetY;
-
-  px = Math.max(0, Math.min(px, rect.width - el.offsetWidth));
-  py = Math.max(0, Math.min(py, rect.height - el.offsetHeight));
-
-  el.style.left = px + "px";
-  el.style.top = py + "px";
-}
-
-// MOUSE
-document.onmousemove = (e) => {
-  if (!dragging || !selected) return;
-
-  const rect = preview.getBoundingClientRect();
-  moveElement(selected, e.clientX, e.clientY, rect);
-};
-
-document.onmouseup = () => dragging = false;
+document.onmousemove=(e)=>{if(!dragging||!selected)return;const r=mockup.getBoundingClientRect();move(selected,e.clientX,e.clientY,r);};
+document.onmouseup=()=>dragging=false;
 
 // RESIZE
-function enableResize(el) {
-  el.onwheel = (e) => {
-    e.preventDefault();
-
-    let w = el.offsetWidth;
-    w += (e.deltaY < 0 ? 10 : -10);
-
-    if (w > 20 && w < 400) {
-      el.style.width = w + "px";
-    }
-  };
-}
+function enableResize(el){ el.onwheel=(e)=>{e.preventDefault();let w=el.offsetWidth+(e.deltaY<0?10:-10);if(w>20&&w<400)el.style.width=w+"px";}; }
 
 // SELECT
-function enableSelect(el) {
-  el.onclick = (e) => {
-    e.stopPropagation();
+function enableSelect(el){ el.onclick=(e)=>{e.stopPropagation();if(selected)selected.style.outline="none";selected=el;el.style.outline="2px solid red";}; }
 
-    if (selected) selected.style.outline = "none";
-
-    selected = el;
-    el.style.outline = "2px solid red";
-  };
-}
-
-// DELETE
-window.deleteSelected = function() {
-  if (selected) {
-    selected.remove();
-    selected = null;
-  }
-};
+window.deleteSelected = function(){ if(selected){selected.remove();selected=null;} };
 
 // SIZE
-window.selectSize = function(e, s) {
-  size = s;
-
-  document.querySelectorAll("#stepSize button").forEach(btn => {
-    btn.classList.remove("bg-white","text-black");
-    btn.classList.add("bg-zinc-800");
+window.selectSize = function(e,s){
+  size=s;
+  document.querySelectorAll("#stepSize button").forEach(b=>{
+    b.classList.remove("bg-white","text-black");
+    b.classList.add("bg-zinc-800");
   });
-
   e.target.classList.add("bg-white","text-black");
 };
 
 // CART
-window.addToCart = function() {
-  if (!size) return alert("Selecciona talla");
+window.addToCart = function(){
+  if(!size)return alert("Selecciona talla");
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = JSON.parse(localStorage.getItem("cart"))||[];
 
-  cart.push({
-    product,
-    fit,
-    size,
-    color: selectedColor?.name || "Sin color"
-  });
+  cart.push({product,fit,size,color:selectedColor?.name});
 
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart",JSON.stringify(cart));
 
-  window.location.href = "cart.html";
+  window.location.href="cart.html";
 };
 
 });
