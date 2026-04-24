@@ -10,7 +10,26 @@
 
 <body class="bg-black text-white">
 
-  <h1 class="text-center text-3xl mt-10">Carrito vacío</h1>
+  <!-- NAV -->
+  <nav class="flex justify-between p-4 bg-zinc-900">
+    <h1 class="text-xl font-bold">Carrito</h1>
+    <button onclick="goHome()">Volver</button>
+  </nav>
+
+  <!-- CONTENIDO -->
+  <div id="cartContainer" class="p-6"></div>
+
+  <!-- BOTÓN WHATSAPP -->
+  <div class="fixed bottom-5 right-5">
+    <button 
+      onclick="sendWhatsApp()"
+      class="bg-green-500 px-6 py-3 rounded-full text-black font-bold"
+    >
+      Pedir por WhatsApp
+    </button>
+  </div>
+
+  <script src="js/cart.js"></script>
 
 </body>
 </html>
