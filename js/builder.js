@@ -45,7 +45,7 @@ function selectSize(s) {
   size = s;
 }
 
-// SUBIR IMÁGENES
+// SUBIR IMÁGENES (BASE64)
 document.getElementById("upload").addEventListener("change", function (e) {
   const files = e.target.files;
   const container = document.getElementById("designs");
@@ -75,7 +75,7 @@ document.getElementById("upload").addEventListener("change", function (e) {
   }
 });
 
-// SELECCIONAR
+// SELECCIÓN
 function enableSelect(element) {
   element.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -89,7 +89,6 @@ function enableSelect(element) {
   });
 }
 
-// CLICK FUERA = DESELECCIONAR
 document.getElementById("preview").addEventListener("click", () => {
   if (selectedElement) {
     selectedElement.style.outline = "none";
@@ -142,9 +141,7 @@ document.addEventListener("mousemove", (e) => {
   }
 });
 
-document.addEventListener("mouseup", () => {
-  // no quitamos selección aquí
-});
+document.addEventListener("mouseup", () => {});
 
 // RESIZE
 function enableResize(element) {
