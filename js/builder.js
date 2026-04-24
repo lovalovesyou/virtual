@@ -1,7 +1,7 @@
 let currentStep = 1;
 
 let product = null;
-let color = null;
+let color = "#ffffff";
 let size = null;
 
 let selectedElement = null;
@@ -10,14 +10,10 @@ let offsetY = 0;
 
 let currentSide = "front";
 
-// 🔥 DISEÑOS POR LADO
 let designsData = {
   front: [],
   back: []
 };
-
-const frontImage = "https://i.imgur.com/1XKQ9ZP.png";
-const backImage = "https://i.imgur.com/Z6X6K4F.png";
 
 // NAV
 function goHome() {
@@ -44,30 +40,31 @@ function selectProduct(p) {
   nextStep();
 }
 
-// COLOR
+// COLOR (AHORA CAMBIA LA POLERA REAL)
 function selectColor(c) {
   color = c;
+  document.getElementById("shirtShape").setAttribute("fill", c);
   nextStep();
 }
 
-// 🔥 CAMBIAR LADO
+// GIRAR (simulado por espejo)
 function rotateView() {
   saveCurrentDesigns();
 
-  const img = document.getElementById("productImage");
+  const shirt = document.getElementById("shirt");
 
   if (currentSide === "front") {
-    img.src = backImage;
+    shirt.style.transform = "scaleX(-1)";
     currentSide = "back";
   } else {
-    img.src = frontImage;
+    shirt.style.transform = "scaleX(1)";
     currentSide = "front";
   }
 
   loadDesigns();
 }
 
-// 🔥 GUARDAR DISEÑOS DEL LADO ACTUAL
+// GUARDAR
 function saveCurrentDesigns() {
   const arr = [];
 
@@ -84,7 +81,7 @@ function saveCurrentDesigns() {
   designsData[currentSide] = arr;
 }
 
-// 🔥 CARGAR DISEÑOS DEL LADO
+// CARGAR
 function loadDesigns() {
   const container = document.getElementById("designs");
   container.innerHTML = "";
@@ -121,7 +118,7 @@ function selectSize(e, s) {
   e.target.classList.add("bg-white", "text-black");
 }
 
-// SUBIR IMÁGENES
+// SUBIR
 document.getElementById("upload").addEventListener("change", function (e) {
   const files = e.target.files;
   const container = document.getElementById("designs");
@@ -197,7 +194,6 @@ function sendBackward() {
 function enableDrag(element) {
   element.addEventListener("mousedown", (e) => {
     selectedElement = element;
-
     offsetX = e.offsetX;
     offsetY = e.offsetY;
   });
@@ -205,8 +201,7 @@ function enableDrag(element) {
 
 document.addEventListener("mousemove", (e) => {
   if (selectedElement) {
-    const container = document.getElementById("preview");
-    const rect = container.getBoundingClientRect();
+    const rect = document.getElementById("preview").getBoundingClientRect();
 
     let x = e.clientX - rect.left - offsetX;
     let y = e.clientY - rect.top - offsetY;
@@ -224,16 +219,12 @@ function enableResize(element) {
   element.addEventListener("wheel", (e) => {
     e.preventDefault();
 
-    let currentWidth = element.offsetWidth;
+    let w = element.offsetWidth;
 
-    if (e.deltaY < 0) {
-      currentWidth += 10;
-    } else {
-      currentWidth -= 10;
-    }
+    w += (e.deltaY < 0 ? 10 : -10);
 
-    if (currentWidth > 30 && currentWidth < 300) {
-      element.style.width = currentWidth + "px";
+    if (w > 30 && w < 300) {
+      element.style.width = w + "px";
     }
   });
 }
