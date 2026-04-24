@@ -1,107 +1,192 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>LÖVA Builder</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
+let product, fit, size;
+let currentSide = "front";
+let selected = null;
+let dragging = false;
+let offsetX, offsetY;
 
-<body class="bg-black text-white">
+// 🎨 COLORES LÖVA
+const colors = [
+  {name:"Rojo Italia", value:"#b11226"},
+  {name:"Aceituna", value:"#6b8e23"},
+  {name:"Vino", value:"#722f37"},
+  {name:"Blanco", value:"#ffffff"},
+  {name:"Verde pino", value:"#0b3d2e"},
+  {name:"Grafito", value:"#2f2f2f"},
+  {name:"Azul marino", value:"#0a1f44"},
+  {name:"Maringo", value:"#3c3c3c"},
+  {name:"Negro", value:"#000000"},
+  {name:"Blanco Melange", value:"#e5e5e5"},
+  {name:"Verde militar", value:"#4b5320"},
+  {name:"Azul acero", value:"#4682b4"},
+  {name:"Índigo graff", value:"#2c3e75"},
+  {name:"Melange", value:"#cfcfcf"},
+  {name:"Jeans jaspe", value:"#5a6c7d"},
+  {name:"Ocean graff", value:"#2e8b8b"},
+  {name:"Bronce", value:"#cd7f32"},
+  {name:"Arena", value:"#d2b48c"},
+  {name:"Verde menta", value:"#98ff98"},
+  {name:"Arena graff", value:"#c2a680"},
+  {name:"Cereza graff", value:"#8b0000"}
+];
 
-<nav class="flex justify-between p-4 bg-zinc-900">
-<h1>LÖVA Builder</h1>
-<button onclick="goHome()">Volver</button>
-</nav>
+// NAV
+function goHome() {
+  window.location.href = "home.html";
+}
 
-<div class="flex flex-col md:flex-row h-screen">
+// PRODUCTO
+function selectProduct(p) {
+  product = p;
 
-<!-- PANEL -->
-<div class="md:w-1/3 p-6 bg-zinc-900 overflow-y-auto">
+  if (p === "polera") {
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("stepFit").classList.remove("hidden");
+  } else {
+    showColors();
+  }
+}
 
-<!-- PASO 1 -->
-<div id="step1">
-<h2 class="mb-4 text-xl">Prenda</h2>
+// CORTE
+function selectFit(f) {
+  fit = f;
+  showColors();
+}
 
-<div class="grid grid-cols-2 gap-3">
-<button onclick="selectProduct('polera')" class="bg-zinc-800 p-3 rounded">Polera</button>
-<button onclick="selectProduct('polo')" class="bg-zinc-800 p-3 rounded">Polo</button>
-<button onclick="selectProduct('canguro')" class="bg-zinc-800 p-3 rounded">Canguro</button>
-<button onclick="selectProduct('sudadera')" class="bg-zinc-800 p-3 rounded">Sudadera</button>
-</div>
-</div>
+// MOSTRAR COLORES
+function showColors() {
+  document.getElementById("stepFit").classList.add("hidden");
+  document.getElementById("stepColor").classList.remove("hidden");
 
-<!-- CORTE -->
-<div id="stepFit" class="hidden mt-6">
-<h2 class="mb-4 text-xl">Corte</h2>
+  const container = document.getElementById("colors");
+  container.innerHTML = "";
 
-<div class="flex gap-3">
-<button onclick="selectFit('oversized')" class="bg-zinc-800 px-4 py-2 rounded">Oversized</button>
-<button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
-</div>
-</div>
+  colors.forEach(c => {
+    const btn = document.createElement("button");
 
-<!-- 🎨 COLORES -->
-<div id="stepColor" class="hidden mt-6">
-<h2 class="mb-4 text-xl">Color</h2>
+    btn.style.background = c.value;
+    btn.title = c.name;
+    btn.className = "w-10 h-10 rounded border";
 
-<div id="colors" class="grid grid-cols-4 gap-3"></div>
-</div>
+    btn.onclick = () => selectColor(c.value);
 
-<!-- DISEÑO -->
-<div id="stepUpload" class="hidden mt-6">
-<input type="file" id="upload" multiple class="mb-3">
+    container.appendChild(btn);
+  });
+}
 
-<button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">
-Eliminar
-</button>
+// COLOR
+function selectColor(c) {
+  document.getElementById("colorLayer").style.background = c;
 
-<button onclick="nextStep()" class="bg-white text-black px-4 py-2 rounded">
-Siguiente
-</button>
-</div>
+  document.getElementById("stepColor").classList.add("hidden");
+  document.getElementById("stepUpload").classList.remove("hidden");
+}
 
-<!-- TALLA -->
-<div id="stepSize" class="hidden mt-6">
-<h2 class="mb-3">Talla</h2>
+// CAMBIO LADO
+function toggleSide() {
+  currentSide = currentSide === "front" ? "back" : "front";
+  alert("Vista: " + currentSide);
+}
 
-<div class="flex gap-3 mb-3">
-<button onclick="selectSize('S')" class="bg-zinc-800 px-3 py-2 rounded">S</button>
-<button onclick="selectSize('M')" class="bg-zinc-800 px-3 py-2 rounded">M</button>
-<button onclick="selectSize('L')" class="bg-zinc-800 px-3 py-2 rounded">L</button>
-</div>
+// SUBIR
+document.getElementById("upload").addEventListener("change", (e) => {
+  const files = e.target.files;
+  const container = document.getElementById("designs");
 
-<button onclick="addToCart()" class="bg-white text-black px-4 py-2 rounded">
-Agregar
-</button>
-</div>
+  for (let file of files) {
+    const reader = new FileReader();
 
-</div>
+    reader.onload = (ev) => {
+      const img = document.createElement("img");
 
-<!-- PREVIEW -->
-<div class="md:w-2/3 flex flex-col items-center justify-center gap-4">
+      img.src = ev.target.result;
+      img.className = "absolute w-24 cursor-move";
 
-<button onclick="toggleSide()" class="bg-white text-black px-4 py-2">
-Frente / Espalda
-</button>
+      img.style.left = "120px";
+      img.style.top = "120px";
 
-<div id="preview" class="relative w-96 h-96 flex items-center justify-center">
+      enableDrag(img);
+      enableResize(img);
+      enableSelect(img);
 
-<!-- BASE COLOR -->
-<div id="colorLayer" class="absolute w-72 h-80 rounded"></div>
+      container.appendChild(img);
+    };
 
-<!-- MOCKUP (AQUI IRÁN TUS IMÁGENES) -->
-<img id="mockup" class="absolute w-72">
+    reader.readAsDataURL(file);
+  }
+});
 
-<!-- DISEÑOS -->
-<div id="designs" class="absolute inset-0"></div>
+// DRAG REAL (SUAVE)
+function enableDrag(el) {
+  el.onmousedown = (e) => {
+    dragging = true;
+    selected = el;
 
-</div>
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+  };
+}
 
-</div>
+document.onmousemove = (e) => {
+  if (!dragging || !selected) return;
 
-</div>
+  const rect = preview.getBoundingClientRect();
 
-<script src="js/builder.js"></script>
-</body>
-</html>
+  selected.style.left = (e.clientX - rect.left - offsetX) + "px";
+  selected.style.top = (e.clientY - rect.top - offsetY) + "px";
+};
+
+document.onmouseup = () => dragging = false;
+
+// RESIZE (FIJO)
+function enableResize(el) {
+  el.onwheel = (e) => {
+    e.preventDefault();
+
+    let w = el.offsetWidth;
+
+    w += (e.deltaY < 0 ? 10 : -10);
+
+    if (w > 20 && w < 400) {
+      el.style.width = w + "px";
+    }
+  };
+}
+
+// SELECT
+function enableSelect(el) {
+  el.onclick = (e) => {
+    e.stopPropagation();
+
+    if (selected) selected.style.outline = "none";
+
+    selected = el;
+    el.style.outline = "2px solid red";
+  };
+}
+
+// DELETE
+function deleteSelected() {
+  if (selected) {
+    selected.remove();
+    selected = null;
+  }
+}
+
+// TALLA
+function selectSize(s) {
+  size = s;
+}
+
+// CARRITO
+function addToCart() {
+  if (!size) return alert("Selecciona talla");
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.push({ product, fit, size });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("Agregado");
+  window.location.href = "cart.html";
+}
