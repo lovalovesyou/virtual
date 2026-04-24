@@ -43,9 +43,9 @@
         <h2 class="text-2xl mb-4">Elige color</h2>
 
         <div class="flex gap-4">
-          <button onclick="selectColor('white')" class="w-10 h-10 bg-white rounded-full"></button>
-          <button onclick="selectColor('black')" class="w-10 h-10 bg-black border rounded-full"></button>
-          <button onclick="selectColor('red')" class="w-10 h-10 bg-red-500 rounded-full"></button>
+          <button onclick="selectColor('#ffffff')" class="w-10 h-10 bg-white rounded-full"></button>
+          <button onclick="selectColor('#000000')" class="w-10 h-10 bg-black border rounded-full"></button>
+          <button onclick="selectColor('#ef4444')" class="w-10 h-10 bg-red-500 rounded-full"></button>
         </div>
       </div>
 
@@ -90,14 +90,17 @@
         Girar prenda
       </button>
 
-      <div id="preview" class="relative w-72 h-72 flex items-center justify-center">
+      <div id="preview" class="relative w-80 h-80 flex items-center justify-center">
 
-        <img 
-          id="productImage"
-          src="https://i.imgur.com/1XKQ9ZP.png"
-          class="w-full h-full object-contain absolute"
-        >
+        <!-- 🔥 POLERA SVG -->
+        <svg id="shirt" viewBox="0 0 200 200" class="w-full h-full">
+          <path id="shirtShape"
+            d="M50 30 L70 10 L130 10 L150 30 L180 50 L160 80 L140 70 L140 180 L60 180 L60 70 L40 80 L20 50 Z"
+            fill="white"
+          />
+        </svg>
 
+        <!-- DISEÑOS -->
         <div id="designs" class="absolute inset-0"></div>
 
       </div>
