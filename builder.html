@@ -32,15 +32,25 @@
 
         <div class="grid grid-cols-2 gap-4">
           <button onclick="selectProduct('polera')" class="bg-zinc-800 p-4 rounded">Polera</button>
-          <button onclick="selectProduct('sudadera')" class="bg-zinc-800 p-4 rounded">Sudadera</button>
-          <button onclick="selectProduct('canguro')" class="bg-zinc-800 p-4 rounded">Canguro</button>
           <button onclick="selectProduct('polo')" class="bg-zinc-800 p-4 rounded">Polo</button>
+          <button onclick="selectProduct('canguro')" class="bg-zinc-800 p-4 rounded">Canguro</button>
+          <button onclick="selectProduct('sudadera')" class="bg-zinc-800 p-4 rounded">Sudadera</button>
+        </div>
+      </div>
+
+      <!-- 🔥 CORTE SOLO PARA POLERA -->
+      <div id="step1b" class="hidden">
+        <h2 class="text-2xl mb-4">Tipo de corte</h2>
+
+        <div class="flex gap-4">
+          <button onclick="selectFit('oversized')" class="bg-zinc-800 px-4 py-2 rounded">Oversized</button>
+          <button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
         </div>
       </div>
 
       <!-- PASO 2 -->
       <div id="step2" class="hidden">
-        <h2 class="text-2xl mb-4">Elige color</h2>
+        <h2 class="text-2xl mb-4">Color</h2>
 
         <div class="flex gap-4">
           <button onclick="selectColor('#ffffff')" class="w-10 h-10 bg-white rounded-full"></button>
@@ -51,15 +61,13 @@
 
       <!-- PASO 3 -->
       <div id="step3" class="hidden">
-        <h2 class="text-2xl mb-4">Sube tu diseño</h2>
+        <h2 class="text-2xl mb-4">Diseño</h2>
 
         <input type="file" id="upload" multiple class="mb-4">
 
-        <div class="flex gap-2 mb-4">
-          <button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded">Eliminar</button>
-          <button onclick="bringForward()" class="bg-zinc-700 px-3 py-2 rounded">⬆</button>
-          <button onclick="sendBackward()" class="bg-zinc-700 px-3 py-2 rounded">⬇</button>
-        </div>
+        <button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-4">
+          Eliminar seleccionado
+        </button>
 
         <button onclick="nextStep()" class="bg-white text-black px-4 py-2 rounded">
           Siguiente
@@ -68,7 +76,7 @@
 
       <!-- PASO 4 -->
       <div id="step4" class="hidden">
-        <h2 class="text-2xl mb-4">Selecciona talla</h2>
+        <h2 class="text-2xl mb-4">Talla</h2>
 
         <div class="flex gap-4 mb-4">
           <button onclick="selectSize(event,'S')" class="bg-zinc-800 px-4 py-2 rounded">S</button>
@@ -77,31 +85,20 @@
         </div>
 
         <button onclick="addToCart()" class="bg-white text-black px-6 py-3 rounded">
-          Agregar al carrito
+          Agregar
         </button>
       </div>
 
     </div>
 
     <!-- PREVIEW -->
-    <div class="md:w-2/3 flex flex-col items-center justify-center gap-4">
-
-      <button onclick="rotateView()" class="bg-zinc-700 px-4 py-2 rounded">
-        Girar prenda
-      </button>
+    <div class="md:w-2/3 flex items-center justify-center">
 
       <div id="preview" class="relative w-80 h-80 flex items-center justify-center">
 
-        <!-- 🔥 POLERA BASE (SIEMPRE FUNCIONA) -->
-        <div id="shirtBase"
-          class="w-64 h-72 bg-white rounded-lg shadow-inner"
-          style="clip-path: polygon(
-            20% 0%, 80% 0%, 100% 15%, 85% 25%,
-            85% 100%, 15% 100%, 15% 25%, 0% 15%
-          );"
-        ></div>
+        <!-- 🔥 PRENDA DINÁMICA -->
+        <div id="shirtBase" class="bg-white w-64 h-72 rounded"></div>
 
-        <!-- DISEÑOS -->
         <div id="designs" class="absolute inset-0"></div>
 
       </div>
