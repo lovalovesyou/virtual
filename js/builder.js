@@ -1,6 +1,7 @@
 let product = null;
 let fit = null;
 let size = null;
+let selectedColor = null;
 
 let selected = null;
 let dragging = false;
@@ -9,10 +10,29 @@ let offsetY = 0;
 
 const preview = document.getElementById("preview");
 
-// COLORES
+// 🎨 COLORES COMPLETOS LÖVA
 const colors = [
-  "#b11226","#6b8e23","#722f37","#ffffff","#0b3d2e",
-  "#2f2f2f","#0a1f44","#3c3c3c","#000000","#e5e5e5"
+  {name:"Rojo Italia", value:"#b11226"},
+  {name:"Aceituna", value:"#6b8e23"},
+  {name:"Vino", value:"#722f37"},
+  {name:"Blanco", value:"#ffffff"},
+  {name:"Verde pino", value:"#0b3d2e"},
+  {name:"Grafito", value:"#2f2f2f"},
+  {name:"Azul marino", value:"#0a1f44"},
+  {name:"Maringo", value:"#3c3c3c"},
+  {name:"Negro", value:"#000000"},
+  {name:"Blanco Melange", value:"#e5e5e5"},
+  {name:"Verde militar", value:"#4b5320"},
+  {name:"Azul acero", value:"#4682b4"},
+  {name:"Índigo graff", value:"#2c3e75"},
+  {name:"Melange", value:"#cfcfcf"},
+  {name:"Jeans jaspe", value:"#5a6c7d"},
+  {name:"Ocean graff", value:"#2e8b8b"},
+  {name:"Bronce", value:"#cd7f32"},
+  {name:"Arena", value:"#d2b48c"},
+  {name:"Verde menta", value:"#98ff98"},
+  {name:"Arena graff", value:"#c2a680"},
+  {name:"Cereza graff", value:"#8b0000"}
 ];
 
 // NAV
@@ -49,22 +69,28 @@ function showColors() {
 
   colors.forEach(c => {
     const btn = document.createElement("button");
-    btn.style.background = c;
-    btn.className = "w-10 h-10 rounded";
+
+    btn.style.background = c.value;
+    btn.title = c.name;
+    btn.className = "w-10 h-10 rounded border";
+
     btn.onclick = () => selectColor(c);
+
     container.appendChild(btn);
   });
 }
 
-// COLOR
+// ✅ COLOR BIEN GUARDADO
 function selectColor(c) {
-  document.getElementById("colorLayer").style.background = c;
+  selectedColor = c;
+
+  document.getElementById("colorLayer").style.background = c.value;
 
   document.getElementById("stepColor").classList.add("hidden");
   document.getElementById("stepUpload").classList.remove("hidden");
 }
 
-// 👉 ESTE ERA EL ERROR PRINCIPAL
+// IR A TALLA
 function goSize() {
   document.getElementById("stepUpload").classList.add("hidden");
   document.getElementById("stepSize").classList.remove("hidden");
@@ -168,13 +194,20 @@ function selectSize(e, s) {
   e.target.classList.add("bg-white","text-black");
 }
 
-// CARRITO
+// 🛒 CARRITO CORREGIDO
 function addToCart() {
   if (!size) return alert("Selecciona talla");
+  if (!selectedColor) return alert("Selecciona color");
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  cart.push({ product, fit, size });
+  cart.push({
+    product,
+    fit,
+    size,
+    colorName: selectedColor.name,
+    colorValue: selectedColor.value
+  });
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
