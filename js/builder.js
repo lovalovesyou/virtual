@@ -10,6 +10,12 @@ let offsetY = 0;
 
 let currentSide = "front";
 
+// 🔥 DISEÑOS POR LADO
+let designsData = {
+  front: [],
+  back: []
+};
+
 const frontImage = "https://i.imgur.com/1XKQ9ZP.png";
 const backImage = "https://i.imgur.com/Z6X6K4F.png";
 
@@ -44,8 +50,10 @@ function selectColor(c) {
   nextStep();
 }
 
-// GIRAR PRENDA
+// 🔥 CAMBIAR LADO
 function rotateView() {
+  saveCurrentDesigns();
+
   const img = document.getElementById("productImage");
 
   if (currentSide === "front") {
@@ -55,6 +63,49 @@ function rotateView() {
     img.src = frontImage;
     currentSide = "front";
   }
+
+  loadDesigns();
+}
+
+// 🔥 GUARDAR DISEÑOS DEL LADO ACTUAL
+function saveCurrentDesigns() {
+  const arr = [];
+
+  document.querySelectorAll("#designs img").forEach(img => {
+    arr.push({
+      src: img.src,
+      x: img.style.left,
+      y: img.style.top,
+      width: img.style.width,
+      z: img.style.zIndex
+    });
+  });
+
+  designsData[currentSide] = arr;
+}
+
+// 🔥 CARGAR DISEÑOS DEL LADO
+function loadDesigns() {
+  const container = document.getElementById("designs");
+  container.innerHTML = "";
+
+  designsData[currentSide].forEach(d => {
+    const img = document.createElement("img");
+
+    img.src = d.src;
+    img.className = "absolute cursor-move";
+
+    img.style.left = d.x;
+    img.style.top = d.y;
+    img.style.width = d.width;
+    img.style.zIndex = d.z;
+
+    enableDrag(img);
+    enableResize(img);
+    enableSelect(img);
+
+    container.appendChild(img);
+  });
 }
 
 // TALLA
@@ -194,19 +245,14 @@ function addToCart() {
     return;
   }
 
-  const designs = [];
+  saveCurrentDesigns();
 
-  document.querySelectorAll("#designs img").forEach(img => {
-    designs.push({
-      src: img.src,
-      x: img.style.left,
-      y: img.style.top,
-      width: img.style.width,
-      z: img.style.zIndex
-    });
-  });
-
-  const item = { product, color, size, designs };
+  const item = {
+    product,
+    color,
+    size,
+    designs: designsData
+  };
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.push(item);
