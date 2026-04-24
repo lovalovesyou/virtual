@@ -35,8 +35,10 @@
 <div id="stepFit" class="hidden mt-6">
 <h2 class="mb-4">Corte</h2>
 
+<div class="flex gap-3">
 <button onclick="selectFit('oversized')" class="bg-zinc-800 px-4 py-2 rounded">Oversized</button>
 <button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
+</div>
 </div>
 
 <!-- COLOR -->
@@ -45,8 +47,10 @@
 <div id="colors" class="grid grid-cols-4 gap-2"></div>
 </div>
 
-<!-- UPLOAD -->
+<!-- DISEÑO -->
 <div id="stepUpload" class="hidden mt-6">
+<h2 class="mb-3">Diseño</h2>
+
 <input type="file" id="upload" multiple class="mb-3">
 
 <button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">
@@ -63,13 +67,13 @@ Siguiente
 <h2 class="mb-3">Talla</h2>
 
 <div class="flex gap-3 mb-3">
-<button onclick="selectSize('S')" class="bg-zinc-800 px-3 py-2 rounded">S</button>
-<button onclick="selectSize('M')" class="bg-zinc-800 px-3 py-2 rounded">M</button>
-<button onclick="selectSize('L')" class="bg-zinc-800 px-3 py-2 rounded">L</button>
+<button onclick="selectSize(event,'S')" class="bg-zinc-800 px-3 py-2 rounded">S</button>
+<button onclick="selectSize(event,'M')" class="bg-zinc-800 px-3 py-2 rounded">M</button>
+<button onclick="selectSize(event,'L')" class="bg-zinc-800 px-3 py-2 rounded">L</button>
 </div>
 
 <button onclick="addToCart()" class="bg-white text-black px-4 py-2 rounded">
-Agregar
+Agregar al carrito
 </button>
 </div>
 
@@ -80,15 +84,8 @@ Agregar
 
 <div id="preview" class="relative w-96 h-96 bg-zinc-800 rounded">
 
-<!-- COLOR -->
 <div id="colorLayer" class="absolute inset-0"></div>
 
-<!-- MOCKUP -->
-<div id="mockup" class="absolute inset-0 flex items-center justify-center text-gray-500">
-Mockup aquí
-</div>
-
-<!-- DISEÑOS -->
 <div id="designs" class="absolute inset-0"></div>
 
 </div>
