@@ -4,6 +4,7 @@ let product = null;
 let fit = null;
 let size = null;
 let selectedColor = null;
+let view = "front";
 
 let selected = null;
 let dragging = false;
@@ -11,9 +12,29 @@ let offsetX = 0;
 let offsetY = 0;
 
 const preview = document.getElementById("preview");
-const shirtShape = document.getElementById("shirtShape");
+const mockup = document.getElementById("mockup");
 
-// 🎨 TODOS LOS COLORES LÖVA
+// 🧥 MOCKUPS
+const mockups = {
+  polera: {
+    front: "https://i.imgur.com/3QZ6FQx.png",
+    back: "https://i.imgur.com/8Qf6K8D.png"
+  },
+  polo: {
+    front: "https://i.imgur.com/Ug6XJcP.png",
+    back: "https://i.imgur.com/dqQX1Kf.png"
+  },
+  canguro: {
+    front: "https://i.imgur.com/7kCeFQp.png",
+    back: "https://i.imgur.com/2XnKpQm.png"
+  },
+  sudadera: {
+    front: "https://i.imgur.com/4R3G5YF.png",
+    back: "https://i.imgur.com/w8lFZkH.png"
+  }
+};
+
+// 🎨 TODOS LOS COLORES LÖVA (NO SE TOCAN)
 const colors = [
   {name:"Rojo Italia", value:"#b11226"},
   {name:"Aceituna", value:"#6b8e23"},
@@ -39,13 +60,13 @@ const colors = [
 ];
 
 // NAV
-window.goHome = function() {
-  window.location.href = "home.html";
-};
+window.goHome = () => window.location.href = "home.html";
 
 // PRODUCTO
 window.selectProduct = function(p) {
   product = p;
+
+  mockup.src = mockups[p][view];
 
   document.getElementById("step1").classList.add("hidden");
 
@@ -54,22 +75,14 @@ window.selectProduct = function(p) {
   } else {
     showColors();
   }
+};
 
-  // FORMAS
-  if (p === "polera") {
-    shirtShape.setAttribute("d","M50 20 L150 20 L180 70 L150 90 L150 200 L50 200 L50 90 L20 70 Z");
-  }
+// CAMBIAR VISTA
+window.setView = function(v) {
+  view = v;
 
-  if (p === "polo") {
-    shirtShape.setAttribute("d","M50 20 L150 20 L170 70 L150 90 L150 200 L50 200 L50 90 L30 70 Z");
-  }
-
-  if (p === "canguro") {
-    shirtShape.setAttribute("d","M40 30 L160 30 L180 90 L150 110 L150 200 L50 200 L50 110 L20 90 Z");
-  }
-
-  if (p === "sudadera") {
-    shirtShape.setAttribute("d","M45 25 L155 25 L175 80 L150 100 L150 200 L50 200 L50 100 L25 80 Z");
+  if (product) {
+    mockup.src = mockups[product][view];
   }
 };
 
@@ -79,7 +92,7 @@ window.selectFit = function(f) {
   showColors();
 };
 
-// COLORES
+// COLORES (TODOS)
 function showColors() {
   document.getElementById("stepFit").classList.add("hidden");
   document.getElementById("stepColor").classList.remove("hidden");
@@ -104,7 +117,7 @@ function showColors() {
 function selectColor(c) {
   selectedColor = c;
 
-  shirtShape.setAttribute("fill", c.value);
+  document.getElementById("colorLayer").style.background = c.value;
 
   document.getElementById("stepColor").classList.add("hidden");
   document.getElementById("stepUpload").classList.remove("hidden");
@@ -223,7 +236,7 @@ window.addToCart = function() {
     product,
     fit,
     size,
-    colorName: selectedColor?.name || "Sin color"
+    color: selectedColor?.name || "Sin color"
   });
 
   localStorage.setItem("cart", JSON.stringify(cart));
