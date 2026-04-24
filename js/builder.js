@@ -18,20 +18,20 @@ const designsContainer = document.getElementById("designs");
 // 🧥 MOCKUPS
 const mockups = {
   polera: {
-    front: "assets/mockups/polera_front.png",
-    back: "assets/mockups/polera_back.png"
+    front: "assets/mockups/polera_front.png.png",
+    back: "assets/mockups/polera_back.png.png"
   },
   polo: {
-    front: "assets/mockups/polo_front.png",
-    back: "assets/mockups/polo_back.png"
+    front: "assets/mockups/polo_front.png.png",
+    back: "assets/mockups/polo_back.png.png"
   },
   canguro: {
-    front: "assets/mockups/canguro_front.png",
-    back: "assets/mockups/canguro_back.png"
+    front: "assets/mockups/canguro_front.png.png",
+    back: "assets/mockups/canguro_back.png.png"
   },
   sudadera: {
-    front: "assets/mockups/sudadera_front.png",
-    back: "assets/mockups/sudadera_back.png"
+    front: "assets/mockups/sudadera_front.png.png",
+    back: "assets/mockups/sudadera_back.png.png"
   }
 };
 
