@@ -35,17 +35,34 @@
 <button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
 </div>
 
+<!-- COLORES -->
 <div id="stepColor" class="hidden mt-6">
 <h2 class="mb-4">Color</h2>
-<div id="colors" class="grid grid-cols-4 gap-2"></div>
+
+<div id="colors" class="grid grid-cols-2 gap-2"></div>
+
+<!-- COLOR SELECCIONADO -->
+<div id="selectedColorInfo" class="mt-4 text-sm text-gray-300"></div>
+
+<button onclick="goUpload()" class="mt-4 bg-white text-black px-4 py-2 rounded w-full">
+Continuar
+</button>
 </div>
 
+<!-- UPLOAD -->
 <div id="stepUpload" class="hidden mt-6">
 <input type="file" id="upload" multiple class="mb-3">
-<button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">Eliminar</button>
-<button onclick="goSize()" class="bg-white text-black px-4 py-2 rounded">Siguiente</button>
+
+<button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">
+Eliminar
+</button>
+
+<button onclick="goSize()" class="bg-white text-black px-4 py-2 rounded w-full">
+Siguiente
+</button>
 </div>
 
+<!-- SIZE -->
 <div id="stepSize" class="hidden mt-6">
 <div class="flex gap-3 mb-3">
 <button onclick="selectSize(event,'S')" class="bg-zinc-800 px-3 py-2 rounded">S</button>
@@ -53,7 +70,7 @@
 <button onclick="selectSize(event,'L')" class="bg-zinc-800 px-3 py-2 rounded">L</button>
 </div>
 
-<button onclick="addToCart()" class="bg-white text-black px-4 py-2 rounded">
+<button onclick="addToCart()" class="bg-white text-black px-4 py-2 rounded w-full">
 Agregar
 </button>
 </div>
