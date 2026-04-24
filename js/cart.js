@@ -1,22 +1,42 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>LÖVA | Carrito</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+function goHome() {
+  window.location.href = "home.html";
+}
 
-<body class="bg-black text-white p-6">
+function loadCart() {
+  const container = document.getElementById("cartItems");
+  container.innerHTML = "";
 
-  <h1 class="text-3xl mb-6">Carrito</h1>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  <div id="cartItems" class="space-y-4"></div>
+  cart.forEach((item, index) => {
+    const div = document.createElement("div");
 
-  <button onclick="goHome()" class="mt-6 bg-white text-black px-4 py-2 rounded">
-    Volver
-  </button>
+    div.className = "bg-zinc-900 p-4 rounded flex justify-between items-center";
 
-  <script src="js/cart.js"></script>
+    div.innerHTML = `
+      <div>
+        <p>Producto: ${item.product}</p>
+        <p>Color: ${item.color}</p>
+        <p>Talla: ${item.size}</p>
+      </div>
 
-</body>
-</html>
+      <button onclick="removeItem(${index})" class="bg-red-500 px-3 py-1 rounded">
+        Eliminar
+      </button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function removeItem(index) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.splice(index, 1);
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  loadCart();
+}
+
+loadCart();
