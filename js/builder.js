@@ -62,9 +62,11 @@ document.getElementById("upload").addEventListener("change", function (e) {
       img.style.top = "50%";
       img.style.left = "50%";
       img.style.transform = "translate(-50%, -50%)";
+      img.style.zIndex = 1;
 
       enableDrag(img);
       enableResize(img);
+      enableSelect(img);
 
       container.appendChild(img);
     };
@@ -72,6 +74,49 @@ document.getElementById("upload").addEventListener("change", function (e) {
     reader.readAsDataURL(file);
   }
 });
+
+// SELECCIONAR
+function enableSelect(element) {
+  element.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    if (selectedElement) {
+      selectedElement.style.outline = "none";
+    }
+
+    selectedElement = element;
+    element.style.outline = "2px solid red";
+  });
+}
+
+// CLICK FUERA = DESELECCIONAR
+document.getElementById("preview").addEventListener("click", () => {
+  if (selectedElement) {
+    selectedElement.style.outline = "none";
+  }
+  selectedElement = null;
+});
+
+// ELIMINAR
+function deleteSelected() {
+  if (selectedElement) {
+    selectedElement.remove();
+    selectedElement = null;
+  }
+}
+
+// CAPAS
+function bringForward() {
+  if (selectedElement) {
+    selectedElement.style.zIndex = parseInt(selectedElement.style.zIndex) + 1;
+  }
+}
+
+function sendBackward() {
+  if (selectedElement) {
+    selectedElement.style.zIndex = parseInt(selectedElement.style.zIndex) - 1;
+  }
+}
 
 // DRAG
 function enableDrag(element) {
@@ -98,10 +143,10 @@ document.addEventListener("mousemove", (e) => {
 });
 
 document.addEventListener("mouseup", () => {
-  selectedElement = null;
+  // no quitamos selección aquí
 });
 
-// RESIZE (con rueda del mouse)
+// RESIZE
 function enableResize(element) {
   element.addEventListener("wheel", (e) => {
     e.preventDefault();
@@ -129,7 +174,8 @@ function addToCart() {
       src: img.src,
       x: img.style.left,
       y: img.style.top,
-      width: img.style.width
+      width: img.style.width,
+      z: img.style.zIndex
     });
   });
 
