@@ -1,173 +1,107 @@
-let product = null;
-let fit = null;
-let color = "#ffffff";
-let size = null;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LÖVA Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-let selectedElement = null;
-let isDragging = false;
+<body class="bg-black text-white">
 
-// NAV
-function goHome() {
-  window.location.href = "home.html";
-}
+<nav class="flex justify-between p-4 bg-zinc-900">
+<h1>LÖVA Builder</h1>
+<button onclick="goHome()">Volver</button>
+</nav>
 
-// PRODUCTO
-function selectProduct(p) {
-  product = p;
+<div class="flex flex-col md:flex-row h-screen">
 
-  if (p === "polera") {
-    document.getElementById("step1").classList.add("hidden");
-    document.getElementById("step1b").classList.remove("hidden");
-  } else {
-    applyProductImage();
-    nextStep();
-  }
-}
+<!-- PANEL -->
+<div class="md:w-1/3 p-6 bg-zinc-900 overflow-y-auto">
 
-// CORTE
-function selectFit(f) {
-  fit = f;
-  applyProductImage();
-  nextStep();
-}
+<!-- PASO 1 -->
+<div id="step1">
+<h2 class="mb-4 text-xl">Prenda</h2>
 
-// 🔥 IMÁGENES REALES (EMBED, NO FALLAN)
-function applyProductImage() {
-  const el = document.getElementById("shirtBase");
+<div class="grid grid-cols-2 gap-3">
+<button onclick="selectProduct('polera')" class="bg-zinc-800 p-3 rounded">Polera</button>
+<button onclick="selectProduct('polo')" class="bg-zinc-800 p-3 rounded">Polo</button>
+<button onclick="selectProduct('canguro')" class="bg-zinc-800 p-3 rounded">Canguro</button>
+<button onclick="selectProduct('sudadera')" class="bg-zinc-800 p-3 rounded">Sudadera</button>
+</div>
+</div>
 
-  const images = {
-    polera: "https://i.imgur.com/7QZ8FQv.png",
-    polo: "https://i.imgur.com/2nCt3Sbl.png",
-    canguro: "https://i.imgur.com/6XgF6YBl.png",
-    sudadera: "https://i.imgur.com/Z9a3XKrl.png"
-  };
+<!-- CORTE -->
+<div id="stepFit" class="hidden mt-6">
+<h2 class="mb-4 text-xl">Corte</h2>
 
-  el.style.backgroundImage = `url(${images[product]})`;
-  el.style.backgroundSize = "contain";
-  el.style.backgroundRepeat = "no-repeat";
-  el.style.backgroundPosition = "center";
-}
+<div class="flex gap-3">
+<button onclick="selectFit('oversized')" class="bg-zinc-800 px-4 py-2 rounded">Oversized</button>
+<button onclick="selectFit('basic')" class="bg-zinc-800 px-4 py-2 rounded">Básico</button>
+</div>
+</div>
 
-// COLOR
-function selectColor(c) {
-  color = c;
-  document.getElementById("shirtBase").style.backgroundColor = c;
-  nextStep();
-}
+<!-- 🎨 COLORES -->
+<div id="stepColor" class="hidden mt-6">
+<h2 class="mb-4 text-xl">Color</h2>
 
-// TALLA
-function selectSize(e, s) {
-  size = s;
+<div id="colors" class="grid grid-cols-4 gap-3"></div>
+</div>
 
-  document.querySelectorAll("#step4 button").forEach(btn => {
-    btn.classList.remove("bg-white", "text-black");
-    btn.classList.add("bg-zinc-800");
-  });
+<!-- DISEÑO -->
+<div id="stepUpload" class="hidden mt-6">
+<input type="file" id="upload" multiple class="mb-3">
 
-  e.target.classList.add("bg-white", "text-black");
-}
+<button onclick="deleteSelected()" class="bg-red-500 px-3 py-2 rounded mb-3">
+Eliminar
+</button>
 
-// SUBIR
-document.getElementById("upload").addEventListener("change", function (e) {
-  const files = e.target.files;
-  const container = document.getElementById("designs");
+<button onclick="nextStep()" class="bg-white text-black px-4 py-2 rounded">
+Siguiente
+</button>
+</div>
 
-  for (let file of files) {
-    const reader = new FileReader();
+<!-- TALLA -->
+<div id="stepSize" class="hidden mt-6">
+<h2 class="mb-3">Talla</h2>
 
-    reader.onload = function (event) {
-      const img = document.createElement("img");
+<div class="flex gap-3 mb-3">
+<button onclick="selectSize('S')" class="bg-zinc-800 px-3 py-2 rounded">S</button>
+<button onclick="selectSize('M')" class="bg-zinc-800 px-3 py-2 rounded">M</button>
+<button onclick="selectSize('L')" class="bg-zinc-800 px-3 py-2 rounded">L</button>
+</div>
 
-      img.src = event.target.result;
-      img.className = "absolute w-24 cursor-move";
+<button onclick="addToCart()" class="bg-white text-black px-4 py-2 rounded">
+Agregar
+</button>
+</div>
 
-      img.style.top = "100px";
-      img.style.left = "100px";
+</div>
 
-      enableDrag(img);
-      enableResize(img);
-      enableSelect(img);
+<!-- PREVIEW -->
+<div class="md:w-2/3 flex flex-col items-center justify-center gap-4">
 
-      container.appendChild(img);
-    };
+<button onclick="toggleSide()" class="bg-white text-black px-4 py-2">
+Frente / Espalda
+</button>
 
-    reader.readAsDataURL(file);
-  }
-});
+<div id="preview" class="relative w-96 h-96 flex items-center justify-center">
 
-// 🔥 DRAG CORRECTO
-function enableDrag(el) {
-  el.addEventListener("mousedown", (e) => {
-    selectedElement = el;
-    isDragging = true;
-  });
-}
+<!-- BASE COLOR -->
+<div id="colorLayer" class="absolute w-72 h-80 rounded"></div>
 
-document.addEventListener("mousemove", (e) => {
-  if (isDragging && selectedElement) {
-    const rect = document.getElementById("preview").getBoundingClientRect();
+<!-- MOCKUP (AQUI IRÁN TUS IMÁGENES) -->
+<img id="mockup" class="absolute w-72">
 
-    selectedElement.style.left = (e.clientX - rect.left) + "px";
-    selectedElement.style.top = (e.clientY - rect.top) + "px";
-  }
-});
+<!-- DISEÑOS -->
+<div id="designs" class="absolute inset-0"></div>
 
-document.addEventListener("mouseup", () => {
-  isDragging = false;
-});
+</div>
 
-// 🔥 RESIZE (VOLVIÓ)
-function enableResize(el) {
-  el.addEventListener("wheel", (e) => {
-    e.preventDefault();
+</div>
 
-    let w = el.offsetWidth;
-    w += (e.deltaY < 0 ? 10 : -10);
+</div>
 
-    if (w > 30 && w < 300) {
-      el.style.width = w + "px";
-    }
-  });
-}
-
-// SELECT
-function enableSelect(el) {
-  el.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    if (selectedElement) selectedElement.style.outline = "none";
-
-    selectedElement = el;
-    el.style.outline = "2px solid red";
-  });
-}
-
-// ELIMINAR
-function deleteSelected() {
-  if (selectedElement) {
-    selectedElement.remove();
-    selectedElement = null;
-  }
-}
-
-// CARRITO
-function addToCart() {
-  if (!size) {
-    alert("Selecciona talla");
-    return;
-  }
-
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  cart.push({
-    product,
-    color,
-    size
-  });
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  alert("Producto agregado");
-
-  window.location.href = "cart.html";
-}
+<script src="js/builder.js"></script>
+</body>
+</html>
